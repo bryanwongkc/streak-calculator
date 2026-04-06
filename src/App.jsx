@@ -8,10 +8,48 @@ const INITIAL_PLAYERS = [
   { id: 'P4', name: 'Player 4', total: 0, debt: 0 },
 ];
 
+const STORAGE_KEY = 'streak-calculator-state';
+
+const loadSavedState = () => {
+  if (typeof window === 'undefined') {
+    return {
+      players: INITIAL_PLAYERS,
+      lastWinner: null,
+      history: [],
+    };
+  }
+
+  try {
+    const savedState = window.localStorage.getItem(STORAGE_KEY);
+
+    if (!savedState) {
+      return {
+        players: INITIAL_PLAYERS,
+        lastWinner: null,
+        history: [],
+      };
+    }
+
+    const parsedState = JSON.parse(savedState);
+
+    return {
+      players: Array.isArray(parsedState.players) ? parsedState.players : INITIAL_PLAYERS,
+      lastWinner: parsedState.lastWinner ?? null,
+      history: Array.isArray(parsedState.history) ? parsedState.history : [],
+    };
+  } catch {
+    return {
+      players: INITIAL_PLAYERS,
+      lastWinner: null,
+      history: [],
+    };
+  }
+};
+
 const App = () => {
-  const [players, setPlayers] = useState(INITIAL_PLAYERS);
-  const [lastWinner, setLastWinner] = useState(null);
-  const [history, setHistory] = useState([]);
+  const [players, setPlayers] = useState(() => loadSavedState().players);
+  const [lastWinner, setLastWinner] = useState(() => loadSavedState().lastWinner);
+  const [history, setHistory] = useState(() => loadSavedState().history);
   const [showFullHistory, setShowFullHistory] = useState(false);
   const [isFullscreen, setIsFullscreen] = useState(false);
   
@@ -56,6 +94,19 @@ const App = () => {
       document.removeEventListener('fullscreenchange', handleFullscreenChange);
     };
   }, []);
+
+  useEffect(() => {
+    if (typeof window === 'undefined') return;
+
+    window.localStorage.setItem(
+      STORAGE_KEY,
+      JSON.stringify({
+        players,
+        lastWinner,
+        history,
+      })
+    );
+  }, [players, lastWinner, history]);
 
   const getLastWinnerFromHistory = (entries) => {
     return entries.find(entry => entry.winner !== "SYSTEM")?.winner || null;
