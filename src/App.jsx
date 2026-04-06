@@ -1,5 +1,5 @@
-import React, { useState } from 'react';
-import { Trophy, Swords, Flame, RotateCcw, History, RotateCw, Info, Settings2, CheckCircle2, MessageSquare, UserCircle, XCircle, Undo2 } from 'lucide-react';
+import React, { useEffect, useState } from 'react';
+import { Trophy, Swords, Flame, RotateCcw, History, RotateCw, Info, Settings2, CheckCircle2, MessageSquare, UserCircle, XCircle, Undo2, Maximize2, Minimize2 } from 'lucide-react';
 
 const INITIAL_PLAYERS = [
   { id: 'P1', name: 'Player 1', total: 0, debt: 0 },
@@ -13,6 +13,7 @@ const App = () => {
   const [lastWinner, setLastWinner] = useState(null);
   const [history, setHistory] = useState([]);
   const [showFullHistory, setShowFullHistory] = useState(false);
+  const [isFullscreen, setIsFullscreen] = useState(false);
   
   // UI States
   const [showAdjustments, setShowAdjustments] = useState(false);
@@ -42,6 +43,19 @@ const App = () => {
   const getPlayerName = (id) => {
     return players.find(p => p.id === id)?.name || id;
   };
+
+  useEffect(() => {
+    const handleFullscreenChange = () => {
+      setIsFullscreen(Boolean(document.fullscreenElement));
+    };
+
+    document.addEventListener('fullscreenchange', handleFullscreenChange);
+    handleFullscreenChange();
+
+    return () => {
+      document.removeEventListener('fullscreenchange', handleFullscreenChange);
+    };
+  }, []);
 
   const getLastWinnerFromHistory = (entries) => {
     return entries.find(entry => entry.winner !== "SYSTEM")?.winner || null;
@@ -178,6 +192,17 @@ const App = () => {
     setShowResetConfirm(false);
   };
 
+  const toggleFullscreen = async () => {
+    if (typeof document === 'undefined') return;
+
+    if (document.fullscreenElement) {
+      await document.exitFullscreen();
+      return;
+    }
+
+    await document.documentElement.requestFullscreen();
+  };
+
   const adjSum = Object.values(adjValues).reduce((a, b) => a + b, 0);
   const visibleHistory = showFullHistory ? history : history.slice(0, 3);
 
@@ -198,6 +223,13 @@ const App = () => {
               className={`flex items-center justify-center gap-2 px-3 py-2 rounded-lg transition-all border text-xs md:text-sm ${isEditingNames ? 'bg-blue-900/20 border-blue-500/50 text-blue-400' : 'bg-slate-800 border-slate-700 text-slate-300'}`}
             >
               <UserCircle size={18} /> {isEditingNames ? 'Lock Names' : 'Edit Names'}
+            </button>
+            <button
+              onClick={toggleFullscreen}
+              className="flex items-center justify-center gap-2 px-3 py-2 rounded-lg transition-all border text-xs md:text-sm bg-slate-800 border-slate-700 text-slate-300"
+            >
+              {isFullscreen ? <Minimize2 size={18} /> : <Maximize2 size={18} />}
+              {isFullscreen ? 'Exit Full' : 'Fullscreen'}
             </button>
             <button 
               onClick={() => setShowAdjustments(!showAdjustments)}
@@ -352,10 +384,10 @@ const App = () => {
             </div>
             <div className="space-y-4">
               <label className="block text-sm font-medium text-slate-400">Base points lost (for others)</label>
-              <div className="grid grid-cols-1 gap-2.5 md:gap-3">
+              <div className="grid grid-cols-2 gap-2.5 md:gap-3">
                 {players.map(p => (
-                  <div key={p.id} className={`flex items-center gap-3 ${currentWinner === p.id ? 'opacity-30' : ''}`}>
-                    <span className="w-20 md:w-24 text-sm font-semibold truncate">{p.name}:</span>
+                  <div key={p.id} className={`space-y-1.5 ${currentWinner === p.id ? 'opacity-30' : ''}`}>
+                    <span className="block text-xs md:text-sm font-semibold truncate">{p.name}</span>
                     <input 
                       type="number"
                       disabled={currentWinner === p.id}
