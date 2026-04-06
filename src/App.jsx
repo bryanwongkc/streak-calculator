@@ -436,13 +436,13 @@ const App = () => {
                 <div>
                   <p className="text-[10px] uppercase text-slate-500 font-semibold mb-1">總數</p>
                   <p className={`text-base md:text-2xl font-mono leading-none ${p.total >= 0 ? 'text-emerald-400' : 'text-rose-400'}`}>
-                    {p.total.toFixed(1)}
+                    {p.total.toFixed(0)}
                   </p>
                 </div>
                 <div className="pt-2 border-t border-slate-800">
                   <p className="text-[10px] uppercase text-slate-500 font-semibold mb-1">拉</p>
                   <p className={`text-sm md:text-xl font-mono leading-none ${p.debt > 0 ? 'text-amber-400' : 'text-slate-600'}`}>
-                    {p.debt > 0 ? `-${p.debt.toFixed(1)}` : '0.0'}
+                    {p.debt > 0 ? `-${p.debt.toFixed(0)}` : '0'}
                   </p>
                 </div>
               </div>
