@@ -154,7 +154,7 @@ const App = () => {
       logMessage = `${getPlayerName(currentWinner)} 拉`;
       nextPlayersState = nextPlayersState.map(p => {
         if (currentLoserIds.includes(p.id)) {
-          return { ...p, debt: (p.debt * 1.5) + roundScores[p.id] };
+          return { ...p, debt: Math.ceil((p.debt * 1.5) + roundScores[p.id]) };
         }
         return p;
       });
@@ -165,7 +165,7 @@ const App = () => {
       let totalSettlement = 0;
       nextPlayersState = nextPlayersState.map(p => {
         if (p.id === currentWinner) {
-          const payment = p.debt * 0.5;
+          const payment = Math.ceil(p.debt * 0.5);
           totalSettlement += payment;
           return { ...p, total: p.total - payment, debt: 0 };
         } else if (p.id !== lastWinner) {
