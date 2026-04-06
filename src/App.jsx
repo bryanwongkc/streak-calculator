@@ -148,8 +148,8 @@ const App = () => {
                          players.find(p => p.id === currentWinner).debt > 0;
 
     if (currentWinner === lastWinner) {
-      ruleType = "Streak (1.5x)";
-      logMessage = `${getPlayerName(currentWinner)} continues the streak! Loser debts multiplied by 1.5.`;
+      ruleType = "拉";
+      logMessage = `${getPlayerName(currentWinner)} 拉`;
       nextPlayersState = nextPlayersState.map(p => {
         if (currentLoserIds.includes(p.id)) {
           return { ...p, debt: (p.debt * 1.5) + roundScores[p.id] };
@@ -157,8 +157,8 @@ const App = () => {
         return p;
       });
     } else if (isSlayingKing) {
-      ruleType = "Giant Slayer (50% Off)";
-      logMessage = `${getPlayerName(currentWinner)} unseated ${getPlayerName(lastWinner)}! ${getPlayerName(currentWinner)} pays 50% debt because ${getPlayerName(lastWinner)} lost.`;
+      ruleType = "劈半!";
+      logMessage = `${getPlayerName(currentWinner)} 反勝 ${getPlayerName(lastWinner)}! ${getPlayerName(currentWinner)} 劈半!`;
       
       let totalSettlement = 0;
       nextPlayersState = nextPlayersState.map(p => {
@@ -180,8 +180,8 @@ const App = () => {
         currentLoserIds.includes(p.id) ? { ...p, debt: roundScores[p.id] } : p
       );
     } else {
-      ruleType = lastWinner ? "Fresh Settlement" : "Initial Round";
-      logMessage = lastWinner ? `Full settlement to ${getPlayerName(lastWinner)} (No discount).` : `First round started.`;
+      ruleType = lastWinner ? "Fresh Settlement" : "拉";
+      logMessage = lastWinner ? `Full settlement to ${getPlayerName(lastWinner)} (No discount).` : ` `;
       
       let totalSettlement = 0;
       if (lastWinner) {
@@ -327,7 +327,7 @@ const App = () => {
           <div className="bg-amber-950/10 border-2 border-amber-900/30 rounded-2xl p-4 md:p-6 animate-in slide-in-from-top duration-300">
             <div className="flex flex-col gap-3 mb-4 md:mb-6 md:flex-row md:justify-between md:items-center">
               <h2 className="text-lg md:text-xl font-bold text-amber-400 flex items-center gap-2">
-                <Settings2 size={20} /> Manual Bank Adjustments
+                <Settings2 size={20} /> 花/槓/骰
               </h2>
               <div className={`px-3 py-1 rounded-full text-[11px] font-bold border self-start md:self-auto ${adjSum === 0 ? 'bg-emerald-900/20 border-emerald-500/50 text-emerald-400' : 'bg-rose-900/20 border-rose-500/50 text-rose-400'}`}>
                 Balance: {adjSum > 0 ? `+${adjSum}` : adjSum} {adjSum === 0 ? '(Perfectly Balanced)' : '(Not Zero-Sum)'}
@@ -343,7 +343,7 @@ const App = () => {
                     value={adjValues[p.id] || ''}
                     onChange={(e) => handleAdjChange(p.id, e.target.value)}
                     className="w-full bg-slate-900 border border-slate-800 rounded-lg p-2.5 md:p-3 text-amber-400 font-mono focus:ring-2 focus:ring-amber-500 outline-none"
-                    placeholder="+/- Points"
+                    placeholder="+/- 番"
                   />
                 </div>
               ))}
@@ -351,24 +351,24 @@ const App = () => {
 
             <div className="space-y-2 mb-4 md:mb-6">
               <label className="text-xs font-bold text-slate-500 uppercase flex items-center gap-1">
-                <MessageSquare size={12} /> Special Remarks (Shown in History)
+                <MessageSquare size={12} /> 原因
               </label>
               <input 
                 type="text"
                 value={adjRemarks}
                 onChange={(e) => setAdjRemarks(e.target.value)}
                 className="w-full bg-slate-900 border border-slate-800 rounded-lg p-2.5 md:p-3 text-slate-200 outline-none focus:ring-2 focus:ring-amber-500"
-                placeholder="e.g. Correcting error from round 5..."
+                placeholder="e.g. 暗槓 / 圍骰"
               />
             </div>
 
             <div className="flex justify-end gap-3">
-              <button onClick={() => setShowAdjustments(false)} className="px-4 py-2 text-slate-400 hover:text-white transition-colors">Cancel</button>
+              <button onClick={() => setShowAdjustments(false)} className="px-4 py-2 text-slate-400 hover:text-white transition-colors">取消</button>
               <button 
                 onClick={applyAdjustments}
                 className="px-6 py-2 bg-amber-600 hover:bg-amber-500 text-white rounded-lg font-bold shadow-lg shadow-amber-900/20 flex items-center gap-2"
               >
-                <CheckCircle2 size={18} /> Apply Changes
+                <CheckCircle2 size={18} /> 確定
               </button>
             </div>
           </div>
@@ -395,7 +395,7 @@ const App = () => {
 
               <div className="space-y-2 md:space-y-3 mt-3 md:mt-4">
                 <div>
-                  <p className="text-[10px] uppercase text-slate-500 font-semibold mb-1">Total</p>
+                  <p className="text-[10px] uppercase text-slate-500 font-semibold mb-1">總數</p>
                   <p className={`text-xl md:text-2xl font-mono ${p.total >= 0 ? 'text-emerald-400' : 'text-rose-400'}`}>
                     {p.total.toFixed(1)}
                   </p>
@@ -492,7 +492,7 @@ const App = () => {
                   <div className="min-w-0">
                     <div className="flex items-center gap-2 mb-1">
                       <span className={`font-bold text-base md:text-lg ${h.winner === 'SYSTEM' ? 'text-amber-400' : 'text-emerald-400'}`}>
-                        {h.winner === 'SYSTEM' ? 'ADJUSTMENT' : `${getPlayerName(h.winner)} Won`}
+                        {h.winner === 'SYSTEM' ? 'ADJUSTMENT' : `${getPlayerName(h.winner)} 勝出`}
                       </span>
                       <span className={`px-2 py-0.5 rounded text-[10px] uppercase font-bold tracking-tight border ${h.type === 'Adjustment' ? 'bg-amber-900/30 text-amber-400 border-amber-800/50' : 'bg-blue-900/30 text-blue-400 border-blue-800/50'}`}>
                         {h.type}
@@ -512,7 +512,7 @@ const App = () => {
                         {s.total > 0 ? `+${s.total.toFixed(1)}` : s.total.toFixed(1)}
                       </span>
                       <span className="text-[9px] text-amber-500/70">
-                        {s.debt > 0 ? `Tab: -${s.debt.toFixed(1)}` : ''}
+                        {s.debt > 0 ? `拉: -${s.debt.toFixed(1)}` : ''}
                       </span>
                     </div>
                   ))}
