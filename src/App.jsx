@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import { Trophy, Swords, Flame, RotateCcw, History, RotateCw, Info, Settings2, CheckCircle2, MessageSquare, UserCircle, XCircle, Undo2, Maximize2, Minimize2 } from 'lucide-react';
+import { Trophy, Swords, Flame, RotateCcw, History, RotateCw, Info, Settings2, CheckCircle2, MessageSquare, UserCircle, XCircle, Undo2, Maximize2, Minimize2, Menu } from 'lucide-react';
 
 const INITIAL_PLAYERS = [
   { id: 'P1', name: 'Player 1', total: 0, debt: 0 },
@@ -52,6 +52,7 @@ const App = () => {
   const [history, setHistory] = useState(() => loadSavedState().history);
   const [showFullHistory, setShowFullHistory] = useState(false);
   const [isFullscreen, setIsFullscreen] = useState(false);
+  const [showSettingsMenu, setShowSettingsMenu] = useState(false);
   
   // UI States
   const [showAdjustments, setShowAdjustments] = useState(false);
@@ -131,6 +132,7 @@ const App = () => {
     setAdjValues({ P1: 0, P2: 0, P3: 0, P4: 0 });
     setAdjRemarks('');
     setShowAdjustments(false);
+    setShowSettingsMenu(false);
   };
 
   const processRound = () => {
@@ -222,6 +224,7 @@ const App = () => {
     setCurrentWinner('');
     setRoundScores({ P1: 0, P2: 0, P3: 0, P4: 0 });
     setShowResetConfirm(false);
+    setShowSettingsMenu(false);
   };
 
   const handleUndo = () => {
@@ -241,6 +244,7 @@ const App = () => {
     setAdjRemarks('');
     setShowAdjustments(false);
     setShowResetConfirm(false);
+    setShowSettingsMenu(false);
   };
 
   const toggleFullscreen = async () => {
@@ -268,56 +272,66 @@ const App = () => {
               港式台灣牌
             </h1>
           </div>
-          <div className="grid grid-cols-2 gap-2 w-full md:flex md:flex-wrap md:justify-center md:w-auto">
-            <button 
-              onClick={() => setIsEditingNames(!isEditingNames)}
-              className={`flex items-center justify-center gap-2 px-3 py-2 rounded-lg transition-all border text-xs md:text-sm ${isEditingNames ? 'bg-blue-900/20 border-blue-500/50 text-blue-400' : 'bg-slate-800 border-slate-700 text-slate-300'}`}
-            >
-              <UserCircle size={18} /> {isEditingNames ? '確定' : '改名'}
-            </button>
+          <div className="relative self-end md:self-auto">
             <button
-              onClick={toggleFullscreen}
+              onClick={() => setShowSettingsMenu(prev => !prev)}
               className="flex items-center justify-center gap-2 px-3 py-2 rounded-lg transition-all border text-xs md:text-sm bg-slate-800 border-slate-700 text-slate-300"
             >
-              {isFullscreen ? <Minimize2 size={18} /> : <Maximize2 size={18} />}
-              {isFullscreen ? 'Exit Full' : 'Fullscreen'}
+              <Menu size={18} /> Settings
             </button>
-            <button 
-              onClick={() => setShowAdjustments(!showAdjustments)}
-              className={`flex items-center justify-center gap-2 px-3 py-2 rounded-lg transition-all border text-xs md:text-sm ${showAdjustments ? 'bg-amber-900/20 border-amber-500/50 text-amber-400' : 'bg-slate-800 border-slate-700 text-slate-300'}`}
-            >
-              <Settings2 size={18} /> 花/槓/骰
-            </button>
-            <button
-              onClick={handleUndo}
-              disabled={history.length === 0}
-              className="flex items-center justify-center gap-2 px-3 py-2 rounded-lg transition-all border text-xs md:text-sm bg-slate-800 border-slate-700 text-slate-300 disabled:opacity-40 disabled:cursor-not-allowed"
-            >
-              <Undo2 size={18} /> Undo
-            </button>
-            
-            {showResetConfirm ? (
-              <div className="col-span-2 flex gap-1 animate-in fade-in zoom-in duration-200 md:col-span-1">
+            {showSettingsMenu && (
+              <div className="absolute right-0 top-full mt-2 w-52 rounded-xl border border-slate-700 bg-slate-900 shadow-2xl shadow-slate-950/40 p-2 z-20 space-y-2">
                 <button 
-                  onClick={handleReset}
-                  className="flex-1 flex items-center justify-center gap-1 px-3 py-2 bg-rose-600 text-white rounded-l-lg font-bold border border-rose-500 shadow-lg shadow-rose-900/20 text-xs md:text-sm"
+                  onClick={() => setIsEditingNames(!isEditingNames)}
+                  className={`w-full flex items-center gap-2 px-3 py-2 rounded-lg transition-all border text-xs md:text-sm ${isEditingNames ? 'bg-blue-900/20 border-blue-500/50 text-blue-400' : 'bg-slate-800 border-slate-700 text-slate-300'}`}
                 >
-                  Confirm Reset
+                  <UserCircle size={18} /> {isEditingNames ? '確定' : '改名'}
+                </button>
+                <button
+                  onClick={toggleFullscreen}
+                  className="w-full flex items-center gap-2 px-3 py-2 rounded-lg transition-all border text-xs md:text-sm bg-slate-800 border-slate-700 text-slate-300"
+                >
+                  {isFullscreen ? <Minimize2 size={18} /> : <Maximize2 size={18} />}
+                  {isFullscreen ? 'Exit Full' : 'Fullscreen'}
                 </button>
                 <button 
-                  onClick={() => setShowResetConfirm(false)}
-                  className="px-3 py-2 bg-slate-800 text-slate-400 rounded-r-lg border border-slate-700"
+                  onClick={() => setShowAdjustments(!showAdjustments)}
+                  className={`w-full flex items-center gap-2 px-3 py-2 rounded-lg transition-all border text-xs md:text-sm ${showAdjustments ? 'bg-amber-900/20 border-amber-500/50 text-amber-400' : 'bg-slate-800 border-slate-700 text-slate-300'}`}
                 >
-                  <XCircle size={18} />
+                  <Settings2 size={18} /> 花/槓/骰
                 </button>
+                <button
+                  onClick={handleUndo}
+                  disabled={history.length === 0}
+                  className="w-full flex items-center gap-2 px-3 py-2 rounded-lg transition-all border text-xs md:text-sm bg-slate-800 border-slate-700 text-slate-300 disabled:opacity-40 disabled:cursor-not-allowed"
+                >
+                  <Undo2 size={18} /> Undo
+                </button>
+                
+                {showResetConfirm ? (
+                  <div className="flex gap-1 animate-in fade-in zoom-in duration-200">
+                    <button 
+                      onClick={handleReset}
+                      className="flex-1 flex items-center justify-center gap-1 px-3 py-2 bg-rose-600 text-white rounded-l-lg font-bold border border-rose-500 shadow-lg shadow-rose-900/20 text-xs md:text-sm"
+                    >
+                      Confirm Reset
+                    </button>
+                    <button 
+                      onClick={() => setShowResetConfirm(false)}
+                      className="px-3 py-2 bg-slate-800 text-slate-400 rounded-r-lg border border-slate-700"
+                    >
+                      <XCircle size={18} />
+                    </button>
+                  </div>
+                ) : (
+                  <button 
+                    onClick={() => setShowResetConfirm(true)}
+                    className="w-full flex items-center gap-2 px-3 py-2 bg-slate-800 hover:bg-rose-900/40 text-rose-400 rounded-lg transition-all border border-slate-700 text-xs md:text-sm"
+                  >
+                    <RotateCcw size={18} /> Reset
+                  </button>
+                )}
               </div>
-            ) : (
-              <button 
-                onClick={() => setShowResetConfirm(true)}
-                className="flex items-center justify-center gap-2 px-3 py-2 bg-slate-800 hover:bg-rose-900/40 text-rose-400 rounded-lg transition-all border border-slate-700 text-xs md:text-sm"
-              >
-                <RotateCcw size={18} /> Reset
-              </button>
             )}
           </div>
         </div>
