@@ -168,7 +168,6 @@ const App = () => {
             <h1 className="text-2xl md:text-3xl font-bold bg-gradient-to-r from-blue-400 to-emerald-400 bg-clip-text text-transparent">
               港式台灣牌
             </h1>
-            <p className="text-slate-400 text-xs md:text-sm">Four-Player Zero-Sum Game Engine</p>
           </div>
           <div className="grid grid-cols-3 gap-2 w-full md:flex md:flex-wrap md:justify-center md:w-auto">
             <button 
