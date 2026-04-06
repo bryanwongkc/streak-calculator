@@ -275,9 +275,10 @@ const App = () => {
           <div className="relative self-end md:self-auto">
             <button
               onClick={() => setShowSettingsMenu(prev => !prev)}
-              className="flex items-center justify-center gap-2 px-3 py-2 rounded-lg transition-all border text-xs md:text-sm bg-slate-800 border-slate-700 text-slate-300"
+              className="flex items-center justify-center p-2.5 rounded-lg transition-all border bg-slate-800 border-slate-700 text-slate-300"
+              aria-label="Open settings"
             >
-              <Menu size={18} /> Settings
+              <Settings2 size={18} />
             </button>
             {showSettingsMenu && (
               <div className="absolute right-0 top-full mt-2 w-52 rounded-xl border border-slate-700 bg-slate-900 shadow-2xl shadow-slate-950/40 p-2 z-20 space-y-2">
