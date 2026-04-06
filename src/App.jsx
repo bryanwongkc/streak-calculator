@@ -266,8 +266,7 @@ const App = () => {
         <div className="grid grid-cols-2 md:grid-cols-4 gap-3 md:gap-4">
           {players.map((p) => (
             <div key={p.id} className={`p-3 md:p-5 rounded-2xl border-2 transition-all duration-500 ${lastWinner === p.id ? 'bg-emerald-950/20 border-emerald-500/50 shadow-lg shadow-emerald-500/10' : 'bg-slate-900 border-slate-800'}`}>
-              <div className="flex justify-between items-start mb-3 md:mb-4">
-                <span className="font-bold text-slate-400 text-xs tracking-widest uppercase">{p.id}</span>
+              <div className="flex justify-end mb-3 md:mb-4">
                 {lastWinner === p.id && <Flame className="text-orange-500 animate-pulse" size={18} />}
               </div>
               
