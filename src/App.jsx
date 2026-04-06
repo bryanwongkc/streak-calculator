@@ -262,20 +262,20 @@ const App = () => {
   const visibleHistory = showFullHistory ? history : history.slice(0, 3);
 
   return (
-    <div className="min-h-screen bg-slate-950 text-slate-100 p-3 md:p-8 font-sans">
-      <div className="max-w-5xl mx-auto space-y-4 md:space-y-8">
+    <div className="min-h-screen bg-slate-950 text-slate-100 p-2 md:p-8 font-sans">
+      <div className="max-w-5xl mx-auto space-y-3 md:space-y-8">
         
         {/* Header */}
-        <div className="flex flex-col gap-3 md:flex-row md:justify-between md:items-center">
-          <div className="text-center md:text-left">
-            <h1 className="text-2xl md:text-3xl font-bold bg-gradient-to-r from-blue-400 to-emerald-400 bg-clip-text text-transparent">
+        <div className="flex items-center justify-between gap-2 md:gap-3">
+          <div className="text-left">
+            <h1 className="text-xl md:text-3xl font-bold bg-gradient-to-r from-blue-400 to-emerald-400 bg-clip-text text-transparent leading-none">
               港式台灣牌
             </h1>
           </div>
-          <div className="relative self-end md:self-auto">
+          <div className="relative shrink-0">
             <button
               onClick={() => setShowSettingsMenu(prev => !prev)}
-              className="flex items-center justify-center p-2.5 rounded-lg transition-all border bg-slate-800 border-slate-700 text-slate-300"
+              className="flex items-center justify-center p-2 rounded-lg transition-all border bg-slate-800 border-slate-700 text-slate-300"
               aria-label="Open settings"
             >
               <Settings2 size={18} />
@@ -390,34 +390,34 @@ const App = () => {
         )}
 
         {/* Player Dashboards */}
-        <div className="grid grid-cols-2 md:grid-cols-4 gap-3 md:gap-4">
+        <div className="grid grid-cols-2 md:grid-cols-4 gap-2 md:gap-4">
           {players.map((p) => (
-            <div key={p.id} className={`p-3 md:p-5 rounded-2xl border-2 transition-all duration-500 ${lastWinner === p.id ? 'bg-emerald-950/20 border-emerald-500/50 shadow-lg shadow-emerald-500/10' : 'bg-slate-900 border-slate-800'}`}>
-              <div className="flex justify-end mb-3 md:mb-4">
-                {lastWinner === p.id && <Flame className="text-orange-500 animate-pulse" size={18} />}
+            <div key={p.id} className={`p-2.5 md:p-5 rounded-xl md:rounded-2xl border transition-all duration-500 ${lastWinner === p.id ? 'bg-emerald-950/20 border-emerald-500/50 shadow-lg shadow-emerald-500/10' : 'bg-slate-900 border-slate-800'}`}>
+              <div className="flex justify-end mb-1.5 md:mb-4 h-4">
+                {lastWinner === p.id && <Flame className="text-orange-500 animate-pulse" size={14} />}
               </div>
               
               {isEditingNames ? (
                 <input 
                   autoFocus
-                  className="bg-slate-800 border border-blue-500/50 rounded px-2 py-1 text-base md:text-xl font-bold w-full text-white outline-none focus:ring-2 focus:ring-blue-500"
+                  className="bg-slate-800 border border-blue-500/50 rounded px-2 py-1 text-sm md:text-xl font-bold w-full text-white outline-none focus:ring-2 focus:ring-blue-500"
                   value={p.name}
                   onChange={(e) => handleNameUpdate(p.id, e.target.value)}
                 />
               ) : (
-                <h3 className="text-base md:text-xl font-bold mb-1 truncate">{p.name}</h3>
+                <h3 className="text-sm md:text-xl font-bold mb-0.5 truncate">{p.name}</h3>
               )}
 
-              <div className="space-y-2 md:space-y-3 mt-3 md:mt-4">
+              <div className="space-y-1.5 md:space-y-3 mt-1.5 md:mt-4">
                 <div>
                   <p className="text-[10px] uppercase text-slate-500 font-semibold mb-1">總數</p>
-                  <p className={`text-xl md:text-2xl font-mono ${p.total >= 0 ? 'text-emerald-400' : 'text-rose-400'}`}>
+                  <p className={`text-base md:text-2xl font-mono leading-none ${p.total >= 0 ? 'text-emerald-400' : 'text-rose-400'}`}>
                     {p.total.toFixed(1)}
                   </p>
                 </div>
                 <div className="pt-2 border-t border-slate-800">
                   <p className="text-[10px] uppercase text-slate-500 font-semibold mb-1">拉</p>
-                  <p className={`text-base md:text-xl font-mono ${p.debt > 0 ? 'text-amber-400' : 'text-slate-600'}`}>
+                  <p className={`text-sm md:text-xl font-mono leading-none ${p.debt > 0 ? 'text-amber-400' : 'text-slate-600'}`}>
                     {p.debt > 0 ? `-${p.debt.toFixed(1)}` : '0.0'}
                   </p>
                 </div>
@@ -427,39 +427,39 @@ const App = () => {
         </div>
 
         {/* Round Input Card */}
-        <div className="bg-slate-900 border border-slate-800 rounded-2xl p-4 md:p-6 shadow-2xl">
-          <div className="flex items-center gap-2 mb-4 md:mb-6">
+        <div className="bg-slate-900 border border-slate-800 rounded-xl md:rounded-2xl p-3 md:p-6 shadow-2xl">
+          <div className="flex items-center gap-2 mb-3 md:mb-6">
             <Swords className="text-blue-400" />
             <h2 className="text-lg md:text-xl font-bold text-white">食糊</h2>
           </div>
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-5 md:gap-8">
-            <div className="space-y-4">
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-3 md:gap-8">
+            <div className="space-y-2">
               <label className="block text-sm font-medium text-slate-400">贏家</label>
-              <div className="grid grid-cols-2 gap-2">
+              <div className="grid grid-cols-2 gap-1.5">
                 {players.map(p => (
                   <button
                     key={p.id}
                     onClick={() => setCurrentWinner(p.id)}
-                    className={`py-2.5 md:py-3 px-3 md:px-4 rounded-xl border-2 transition-all flex items-center justify-center gap-2 font-bold text-sm md:text-base ${currentWinner === p.id ? 'bg-blue-600 border-blue-400 text-white shadow-lg shadow-blue-500/20' : 'bg-slate-800 border-transparent text-slate-400 hover:bg-slate-700'}`}
+                    className={`py-2 md:py-3 px-2.5 md:px-4 rounded-lg md:rounded-xl border transition-all flex items-center justify-center gap-1.5 font-bold text-xs md:text-base ${currentWinner === p.id ? 'bg-blue-600 border-blue-400 text-white shadow-lg shadow-blue-500/20' : 'bg-slate-800 border-transparent text-slate-400 hover:bg-slate-700'}`}
                   >
-                    {currentWinner === p.id && <Trophy size={16} />}
+                    {currentWinner === p.id && <Trophy size={14} />}
                     <span className="truncate">{p.name}</span>
                   </button>
                 ))}
               </div>
             </div>
-            <div className="space-y-4">
+            <div className="space-y-2">
               <label className="block text-sm font-medium text-slate-400">番數</label>
-              <div className="grid grid-cols-2 gap-2.5 md:gap-3">
+              <div className="grid grid-cols-2 gap-2">
                 {players.map(p => (
-                  <div key={p.id} className={`space-y-1.5 ${currentWinner === p.id ? 'opacity-30' : ''}`}>
-                    <span className="block text-xs md:text-sm font-semibold truncate">{p.name}</span>
+                  <div key={p.id} className={`space-y-1 ${currentWinner === p.id ? 'opacity-30' : ''}`}>
+                    <span className="block text-[11px] md:text-sm font-semibold truncate">{p.name}</span>
                     <input 
                       type="number"
                       disabled={currentWinner === p.id}
                       value={roundScores[p.id] || ''}
                       onChange={(e) => handleScoreChange(p.id, e.target.value)}
-                      className="bg-slate-800 border border-slate-700 rounded-lg px-3 py-2 w-full focus:outline-none focus:ring-2 focus:ring-blue-500 text-emerald-400 font-mono"
+                      className="bg-slate-800 border border-slate-700 rounded-lg px-2.5 py-1.5 md:px-3 md:py-2 w-full focus:outline-none focus:ring-2 focus:ring-blue-500 text-emerald-400 font-mono text-sm"
                       placeholder="0"
                     />
                   </div>
@@ -467,11 +467,11 @@ const App = () => {
               </div>
             </div>
           </div>
-          <div className="mt-5 md:mt-8 flex justify-end">
+          <div className="mt-3 md:mt-8 flex justify-end">
             <button
               disabled={!currentWinner}
               onClick={processRound}
-              className="w-full md:w-auto px-8 py-3 bg-blue-600 hover:bg-blue-500 disabled:bg-slate-700 disabled:cursor-not-allowed text-white font-bold rounded-xl transition-all shadow-lg shadow-blue-500/20 flex items-center justify-center gap-2"
+              className="w-full md:w-auto px-6 py-2.5 md:px-8 md:py-3 bg-blue-600 hover:bg-blue-500 disabled:bg-slate-700 disabled:cursor-not-allowed text-white font-bold rounded-lg md:rounded-xl transition-all shadow-lg shadow-blue-500/20 flex items-center justify-center gap-2 text-sm md:text-base"
             >
               <RotateCw size={18} /> 確定更新
             </button>
