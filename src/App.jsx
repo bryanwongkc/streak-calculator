@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { Trophy, Swords, Flame, RotateCcw, History, RotateCw, Info, Settings2, CheckCircle2, MessageSquare, UserCircle, XCircle } from 'lucide-react';
+import { Trophy, Swords, Flame, RotateCcw, History, RotateCw, Info, Settings2, CheckCircle2, MessageSquare, UserCircle, XCircle, Undo2 } from 'lucide-react';
 
 const INITIAL_PLAYERS = [
   { id: 'P1', name: 'Player 1', total: 0, debt: 0 },
@@ -41,6 +41,10 @@ const App = () => {
 
   const getPlayerName = (id) => {
     return players.find(p => p.id === id)?.name || id;
+  };
+
+  const getLastWinnerFromHistory = (entries) => {
+    return entries.find(entry => entry.winner !== "SYSTEM")?.winner || null;
   };
 
   const applyAdjustments = () => {
@@ -155,6 +159,25 @@ const App = () => {
     setShowResetConfirm(false);
   };
 
+  const handleUndo = () => {
+    if (history.length === 0) return;
+
+    const [, ...remainingHistory] = history;
+    const restoredPlayers = remainingHistory[0]
+      ? JSON.parse(JSON.stringify(remainingHistory[0].scores))
+      : JSON.parse(JSON.stringify(INITIAL_PLAYERS));
+
+    setPlayers(restoredPlayers);
+    setHistory(remainingHistory);
+    setLastWinner(getLastWinnerFromHistory(remainingHistory));
+    setCurrentWinner('');
+    setRoundScores({ P1: 0, P2: 0, P3: 0, P4: 0 });
+    setAdjValues({ P1: 0, P2: 0, P3: 0, P4: 0 });
+    setAdjRemarks('');
+    setShowAdjustments(false);
+    setShowResetConfirm(false);
+  };
+
   const adjSum = Object.values(adjValues).reduce((a, b) => a + b, 0);
   const visibleHistory = showFullHistory ? history : history.slice(0, 3);
 
@@ -169,7 +192,7 @@ const App = () => {
               港式台灣牌
             </h1>
           </div>
-          <div className="grid grid-cols-3 gap-2 w-full md:flex md:flex-wrap md:justify-center md:w-auto">
+          <div className="grid grid-cols-2 gap-2 w-full md:flex md:flex-wrap md:justify-center md:w-auto">
             <button 
               onClick={() => setIsEditingNames(!isEditingNames)}
               className={`flex items-center justify-center gap-2 px-3 py-2 rounded-lg transition-all border text-xs md:text-sm ${isEditingNames ? 'bg-blue-900/20 border-blue-500/50 text-blue-400' : 'bg-slate-800 border-slate-700 text-slate-300'}`}
@@ -182,9 +205,16 @@ const App = () => {
             >
               <Settings2 size={18} /> Adjust Totals
             </button>
+            <button
+              onClick={handleUndo}
+              disabled={history.length === 0}
+              className="flex items-center justify-center gap-2 px-3 py-2 rounded-lg transition-all border text-xs md:text-sm bg-slate-800 border-slate-700 text-slate-300 disabled:opacity-40 disabled:cursor-not-allowed"
+            >
+              <Undo2 size={18} /> Undo
+            </button>
             
             {showResetConfirm ? (
-              <div className="col-span-3 flex gap-1 animate-in fade-in zoom-in duration-200 md:col-span-1">
+              <div className="col-span-2 flex gap-1 animate-in fade-in zoom-in duration-200 md:col-span-1">
                 <button 
                   onClick={handleReset}
                   className="flex-1 flex items-center justify-center gap-1 px-3 py-2 bg-rose-600 text-white rounded-l-lg font-bold border border-rose-500 shadow-lg shadow-rose-900/20 text-xs md:text-sm"
