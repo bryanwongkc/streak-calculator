@@ -227,6 +227,22 @@ const App = () => {
     setShowSettingsMenu(false);
   };
 
+  const handleResetKeepNames = () => {
+    setPlayers(prev => prev.map((player, index) => ({
+      ...INITIAL_PLAYERS[index],
+      name: player.name,
+    })));
+    setLastWinner(null);
+    setHistory([]);
+    setCurrentWinner('');
+    setRoundScores({ P1: 0, P2: 0, P3: 0, P4: 0 });
+    setAdjValues({ P1: 0, P2: 0, P3: 0, P4: 0 });
+    setAdjRemarks('');
+    setShowAdjustments(false);
+    setShowResetConfirm(false);
+    setShowSettingsMenu(false);
+  };
+
   const handleUndo = () => {
     if (history.length === 0) return;
 
@@ -310,19 +326,27 @@ const App = () => {
                 </button>
                 
                 {showResetConfirm ? (
-                  <div className="flex gap-1 animate-in fade-in zoom-in duration-200">
+                  <div className="space-y-2 animate-in fade-in zoom-in duration-200">
                     <button 
-                      onClick={handleReset}
-                      className="flex-1 flex items-center justify-center gap-1 px-3 py-2 bg-rose-600 text-white rounded-l-lg font-bold border border-rose-500 shadow-lg shadow-rose-900/20 text-xs md:text-sm"
+                      onClick={handleResetKeepNames}
+                      className="w-full flex items-center justify-center gap-2 px-3 py-2 bg-amber-600 text-white rounded-lg font-bold border border-amber-500 shadow-lg shadow-amber-900/20 text-xs md:text-sm"
                     >
-                      Confirm Reset
+                      <RotateCcw size={16} /> Reset Stats Keep Names
                     </button>
-                    <button 
-                      onClick={() => setShowResetConfirm(false)}
-                      className="px-3 py-2 bg-slate-800 text-slate-400 rounded-r-lg border border-slate-700"
-                    >
-                      <XCircle size={18} />
-                    </button>
+                    <div className="flex gap-1">
+                      <button 
+                        onClick={handleReset}
+                        className="flex-1 flex items-center justify-center gap-1 px-3 py-2 bg-rose-600 text-white rounded-l-lg font-bold border border-rose-500 shadow-lg shadow-rose-900/20 text-xs md:text-sm"
+                      >
+                        Full Reset
+                      </button>
+                      <button 
+                        onClick={() => setShowResetConfirm(false)}
+                        className="px-3 py-2 bg-slate-800 text-slate-400 rounded-r-lg border border-slate-700"
+                      >
+                        <XCircle size={18} />
+                      </button>
+                    </div>
                   </div>
                 ) : (
                   <button 
