@@ -273,7 +273,7 @@ const App = () => {
               onClick={() => setIsEditingNames(!isEditingNames)}
               className={`flex items-center justify-center gap-2 px-3 py-2 rounded-lg transition-all border text-xs md:text-sm ${isEditingNames ? 'bg-blue-900/20 border-blue-500/50 text-blue-400' : 'bg-slate-800 border-slate-700 text-slate-300'}`}
             >
-              <UserCircle size={18} /> {isEditingNames ? 'Lock Names' : 'Edit Names'}
+              <UserCircle size={18} /> {isEditingNames ? '確定' : '改名'}
             </button>
             <button
               onClick={toggleFullscreen}
@@ -286,7 +286,7 @@ const App = () => {
               onClick={() => setShowAdjustments(!showAdjustments)}
               className={`flex items-center justify-center gap-2 px-3 py-2 rounded-lg transition-all border text-xs md:text-sm ${showAdjustments ? 'bg-amber-900/20 border-amber-500/50 text-amber-400' : 'bg-slate-800 border-slate-700 text-slate-300'}`}
             >
-              <Settings2 size={18} /> Adjust Totals
+              <Settings2 size={18} /> 花/槓/骰
             </button>
             <button
               onClick={handleUndo}
@@ -395,13 +395,13 @@ const App = () => {
 
               <div className="space-y-2 md:space-y-3 mt-3 md:mt-4">
                 <div>
-                  <p className="text-[10px] uppercase text-slate-500 font-semibold mb-1">Banked Total</p>
+                  <p className="text-[10px] uppercase text-slate-500 font-semibold mb-1">Total</p>
                   <p className={`text-xl md:text-2xl font-mono ${p.total >= 0 ? 'text-emerald-400' : 'text-rose-400'}`}>
                     {p.total.toFixed(1)}
                   </p>
                 </div>
                 <div className="pt-2 border-t border-slate-800">
-                  <p className="text-[10px] uppercase text-slate-500 font-semibold mb-1">Current Tab (Debt)</p>
+                  <p className="text-[10px] uppercase text-slate-500 font-semibold mb-1">拉</p>
                   <p className={`text-base md:text-xl font-mono ${p.debt > 0 ? 'text-amber-400' : 'text-slate-600'}`}>
                     {p.debt > 0 ? `-${p.debt.toFixed(1)}` : '0.0'}
                   </p>
@@ -415,11 +415,11 @@ const App = () => {
         <div className="bg-slate-900 border border-slate-800 rounded-2xl p-4 md:p-6 shadow-2xl">
           <div className="flex items-center gap-2 mb-4 md:mb-6">
             <Swords className="text-blue-400" />
-            <h2 className="text-lg md:text-xl font-bold text-white">Record New Round</h2>
+            <h2 className="text-lg md:text-xl font-bold text-white">食糊</h2>
           </div>
           <div className="grid grid-cols-1 md:grid-cols-2 gap-5 md:gap-8">
             <div className="space-y-4">
-              <label className="block text-sm font-medium text-slate-400">Who won this round?</label>
+              <label className="block text-sm font-medium text-slate-400">贏家</label>
               <div className="grid grid-cols-2 gap-2">
                 {players.map(p => (
                   <button
@@ -434,7 +434,7 @@ const App = () => {
               </div>
             </div>
             <div className="space-y-4">
-              <label className="block text-sm font-medium text-slate-400">Base points lost (for others)</label>
+              <label className="block text-sm font-medium text-slate-400">番數</label>
               <div className="grid grid-cols-2 gap-2.5 md:gap-3">
                 {players.map(p => (
                   <div key={p.id} className={`space-y-1.5 ${currentWinner === p.id ? 'opacity-30' : ''}`}>
@@ -458,7 +458,7 @@ const App = () => {
               onClick={processRound}
               className="w-full md:w-auto px-8 py-3 bg-blue-600 hover:bg-blue-500 disabled:bg-slate-700 disabled:cursor-not-allowed text-white font-bold rounded-xl transition-all shadow-lg shadow-blue-500/20 flex items-center justify-center gap-2"
             >
-              <RotateCw size={18} /> Update & Settle
+              <RotateCw size={18} /> 確定更新
             </button>
           </div>
         </div>
@@ -468,7 +468,7 @@ const App = () => {
           <div className="flex items-center justify-between gap-3">
             <div className="flex items-center gap-2">
               <History className="text-slate-500" />
-              <h2 className="text-lg md:text-xl font-bold text-slate-300">Match History</h2>
+              <h2 className="text-lg md:text-xl font-bold text-slate-300">記錄</h2>
             </div>
             {history.length > 3 && (
               <button
