@@ -164,7 +164,7 @@ const App = () => {
         <div className="flex flex-col md:flex-row justify-between items-center gap-4">
           <div>
             <h1 className="text-3xl font-bold bg-gradient-to-r from-blue-400 to-emerald-400 bg-clip-text text-transparent">
-              Streak Score Calculator
+              港式台灣牌
             </h1>
             <p className="text-slate-400 text-sm">Four-Player Zero-Sum Game Engine</p>
           </div>
