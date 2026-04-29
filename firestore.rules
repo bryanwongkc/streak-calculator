@@ -1,0 +1,13 @@
+rules_version = '2';
+
+service cloud.firestore {
+  match /databases/{database}/documents {
+    match /games/{gameId} {
+      // MVP rule: anonymous-authenticated users can read and write shared games.
+      // The client validates shareToken when joining by link. Production should
+      // replace this with membership rules or a backend join function so tokens
+      // are not readable by any signed-in user.
+      allow read, write: if request.auth != null;
+    }
+  }
+}
