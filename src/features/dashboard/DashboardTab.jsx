@@ -19,27 +19,27 @@ export const DashboardTab = ({ game }) => {
   }
 
   return (
-    <div className="space-y-4">
+    <div className="space-y-2.5 md:space-y-4">
       <div className="grid grid-cols-3 gap-2 md:gap-4">
-        <Card className="p-3 md:p-4">
-          <Activity size={18} className="mb-2 text-[#6b7280]" />
+        <Card className="p-2.5 md:p-4">
+          <Activity size={16} className="mb-1 text-[#6b7280]" />
           <p className="text-[10px] uppercase tracking-[0.16em] text-[#6b7280]">Rounds</p>
-          <p className="font-mono text-xl font-bold text-[#111827]">{stats.rounds}</p>
+          <p className="font-mono text-lg font-bold text-[#111827]">{stats.rounds}</p>
         </Card>
-        <Card className="p-3 md:p-4">
-          <Wrench size={18} className="mb-2 text-[#6b7280]" />
+        <Card className="p-2.5 md:p-4">
+          <Wrench size={16} className="mb-1 text-[#6b7280]" />
           <p className="text-[10px] uppercase tracking-[0.16em] text-[#6b7280]">Adjustments</p>
-          <p className="font-mono text-xl font-bold text-[#111827]">{stats.adjustments}</p>
+          <p className="font-mono text-lg font-bold text-[#111827]">{stats.adjustments}</p>
         </Card>
-        <Card className="p-3 md:p-4">
-          <Trophy size={18} className="mb-2 text-[#6b7280]" />
+        <Card className="p-2.5 md:p-4">
+          <Trophy size={16} className="mb-1 text-[#6b7280]" />
           <p className="text-[10px] uppercase tracking-[0.16em] text-[#6b7280]">Leader</p>
           <p className="truncate text-sm font-bold text-[#111827] md:text-base">{stats.rankings[0]?.name || '-'}</p>
         </Card>
       </div>
 
       <StatsTable rankings={stats.rankings} />
-      <details className="rounded-xl border border-[#d1d5db]/80 bg-white/80 p-3 md:hidden">
+      <details className="rounded-xl border border-[#d1d5db]/80 bg-white/80 p-2.5 md:hidden">
         <summary className="cursor-pointer text-sm font-semibold text-[#374151]">More stats</summary>
         <div className="mt-3">
           <PlayerStatsCards playerStats={stats.playerStats} />

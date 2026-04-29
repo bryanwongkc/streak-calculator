@@ -5,11 +5,11 @@ export const StatsTable = ({ rankings }) => (
   <div className="rounded-xl border border-[#d1d5db]/80 bg-white/90">
     <div className="divide-y divide-[#e5e7eb] md:hidden">
       {rankings.map((stat, index) => (
-        <div key={stat.id} className="grid grid-cols-[32px_minmax(0,1fr)_auto] items-center gap-2 p-3 text-sm">
+        <div key={stat.id} className="grid grid-cols-[28px_minmax(0,1fr)_auto] items-center gap-2 p-2.5 text-sm">
           <div className="font-mono text-[#6b7280]">{index + 1}</div>
           <div className="min-w-0">
             <p className="truncate font-semibold text-[#111827]">{stat.name}</p>
-            <p className="text-xs text-[#6b7280]">{stat.wins}W / {stat.losses}L / debt {stat.debt || 0}</p>
+            <p className="text-[11px] text-[#6b7280]">{stat.wins}W / {stat.losses}L / debt {stat.debt || 0}</p>
           </div>
           <div className={`font-mono font-bold ${stat.total >= 0 ? 'text-[#111827]' : 'text-[#6b7280]'}`}>
             {formatSignedNumber(stat.total)}

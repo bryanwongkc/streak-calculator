@@ -286,7 +286,7 @@ export const AppShell = () => {
         <div className="absolute inset-0 bg-[linear-gradient(120deg,_rgba(255,255,255,0.48)_0%,_transparent_18%,_transparent_82%,_rgba(148,163,184,0.08)_100%)]" />
       </div>
 
-      <div className="relative z-10 mx-auto max-w-5xl space-y-3 pb-20 md:space-y-6">
+      <div className="relative z-10 mx-auto max-w-5xl space-y-2.5 pb-16 md:space-y-6">
         <Header
           game={normalizedGame}
           games={gamesForSwitcher}

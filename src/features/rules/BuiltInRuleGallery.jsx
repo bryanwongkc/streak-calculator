@@ -42,14 +42,14 @@ export const BuiltInRuleGallery = () => {
 
   if (!visibleImages.length) {
     return (
-      <Card className="p-3 md:p-4">
+      <Card className="p-2.5 md:p-4">
         <div className="flex items-start gap-3">
           <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-lg border border-[#d1d5db]/80 bg-white/80 text-[#6b7280]">
             <Search size={18} />
           </div>
           <div>
             <h2 className="font-semibold text-[#111827]">Built-in rule sheets</h2>
-            <p className="mt-1 text-sm text-[#6b7280]">
+            <p className="mt-1 text-xs text-[#6b7280] md:text-sm">
               Add the rule sheet images to <span className="font-mono">public/rules</span> to show them here.
             </p>
           </div>
@@ -60,19 +60,19 @@ export const BuiltInRuleGallery = () => {
 
   return (
     <>
-      <Card className="p-3 md:p-4">
-        <div className="mb-3 flex items-center justify-between gap-3">
+      <Card className="p-2.5 md:p-4">
+        <div className="mb-2 flex items-center justify-between gap-2">
           <div>
             <h2 className="font-semibold text-[#111827]">Rule sheets</h2>
-            <p className="text-sm text-[#6b7280]">Swipe through sheets, then open to zoom.</p>
+            <p className="text-xs text-[#6b7280] md:text-sm">Swipe through sheets, then open to zoom.</p>
           </div>
-          <span className="shrink-0 rounded-full border border-[#d1d5db]/80 bg-white/80 px-3 py-1 text-xs font-semibold text-[#6b7280]">
+          <span className="shrink-0 rounded-full border border-[#d1d5db]/80 bg-white/80 px-2.5 py-0.5 text-[11px] font-semibold text-[#6b7280]">
             {positionLabel}
           </span>
         </div>
 
         {activeImage ? (
-          <div className="overflow-hidden rounded-xl border border-[#d1d5db]/80 bg-white shadow-[0_16px_34px_rgba(148,163,184,0.14)]">
+          <div className="overflow-hidden rounded-lg border border-[#d1d5db]/80 bg-white shadow-[0_16px_34px_rgba(148,163,184,0.14)]">
             <button
               type="button"
               className="block w-full touch-pan-y bg-[#f8fafc]"
@@ -85,15 +85,15 @@ export const BuiltInRuleGallery = () => {
               <img
                 src={activeImage.url}
                 alt={activeImage.title}
-                className="max-h-[58vh] w-full object-contain object-top"
+                className="max-h-[61vh] w-full object-contain object-top"
                 onError={() => setMissingImages((current) => ({ ...current, [activeImage.id]: true }))}
               />
             </button>
-            <div className="flex items-center justify-between gap-2 border-t border-[#e5e7eb] px-2 py-2">
+            <div className="flex items-center justify-between gap-2 border-t border-[#e5e7eb] px-1.5 py-1.5">
               <Button aria-label="Previous rule sheet" size="icon" variant="ghost" onClick={goPrevious} icon={ChevronLeft} />
               <button
                 type="button"
-                className="min-w-0 flex-1 rounded-lg px-2 py-2 text-center text-sm font-semibold text-[#374151] hover:bg-[#f3f4f6]"
+                className="min-w-0 flex-1 rounded-lg px-2 py-1.5 text-center text-sm font-semibold text-[#374151] hover:bg-[#f3f4f6]"
                 onClick={() => setPreviewOpen(true)}
               >
                 <span className="mr-2">{activeImage.title}</span>
@@ -104,12 +104,12 @@ export const BuiltInRuleGallery = () => {
           </div>
         ) : null}
 
-        <div className="mt-3 flex gap-2 overflow-x-auto pb-1">
+        <div className="mt-2 flex gap-1.5 overflow-x-auto pb-1">
           {visibleImages.map((image) => (
             <button
               key={image.id}
               type="button"
-              className={`group w-20 shrink-0 overflow-hidden rounded-lg border bg-white text-left transition ${
+              className={`group w-16 shrink-0 md:w-20 overflow-hidden rounded-lg border bg-white text-left transition ${
                 image.id === activeImage?.id
                   ? 'border-[#111827] shadow-[0_10px_24px_rgba(17,24,39,0.16)]'
                   : 'border-[#d1d5db]/80 hover:border-[#9ca3af]'
@@ -122,7 +122,7 @@ export const BuiltInRuleGallery = () => {
                 className="aspect-[3/4] w-full bg-[#f8fafc] object-cover object-top"
                 onError={() => setMissingImages((current) => ({ ...current, [image.id]: true }))}
               />
-              <div className="flex items-center justify-center gap-1 px-1 py-1.5">
+              <div className="flex items-center justify-center gap-1 px-1 py-1">
                 <span className="text-[11px] font-semibold text-[#374151]">{visibleImages.findIndex((item) => item.id === image.id) + 1}</span>
                 <Search size={12} className="shrink-0 text-[#6b7280] transition group-hover:text-[#111827]" />
               </div>

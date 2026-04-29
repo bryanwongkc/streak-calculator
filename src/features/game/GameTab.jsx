@@ -65,7 +65,7 @@ export const GameTab = ({
   };
 
   return (
-    <div className="space-y-2 md:space-y-6">
+    <div className="space-y-1.5 md:space-y-6">
       <PlayerCards
         players={players}
         lastWinner={game.lastWinner}

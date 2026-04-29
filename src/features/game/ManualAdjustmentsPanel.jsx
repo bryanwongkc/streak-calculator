@@ -1,5 +1,5 @@
 import React from 'react';
-import { CheckCircle2, MessageSquare, Settings2 } from 'lucide-react';
+import { MessageSquare, Settings2 } from 'lucide-react';
 import { Button } from '../../components/common/Button';
 import { Card } from '../../components/common/Card';
 import { NumberInput } from '../../components/common/NumberInput';
@@ -21,20 +21,20 @@ export const ManualAdjustmentsPanel = ({
   const Wrapper = embedded ? 'div' : Card;
 
   return (
-    <Wrapper className={embedded ? '' : 'p-3 md:p-6'}>
-      <div className="mb-3 flex flex-col gap-2 md:mb-4 md:flex-row md:items-center md:justify-between">
+    <Wrapper className={embedded ? '' : 'p-2.5 md:p-6'}>
+      <div className="mb-2.5 flex flex-col gap-2 md:mb-4 md:flex-row md:items-center md:justify-between">
         <h2 className={`${embedded ? 'hidden' : 'flex'} items-center gap-2 text-lg font-semibold text-[#374151] md:text-xl`}>
           <Settings2 size={20} /> Manual adjustments
         </h2>
-        <div className={`self-start rounded-full border px-3 py-1 text-[11px] font-bold md:self-auto ${sum === 0 ? 'border-[#86efac]/70 bg-[#dcfce7] text-[#166534]' : 'border-[#fecaca]/80 bg-[#fee2e2] text-[#991b1b]'}`}>
+        <div className={`self-start rounded-full border px-2.5 py-0.5 text-[10px] font-bold md:self-auto ${sum === 0 ? 'border-[#86efac]/70 bg-[#dcfce7] text-[#166534]' : 'border-[#fecaca]/80 bg-[#fee2e2] text-[#991b1b]'}`}>
           Balance: {sum > 0 ? `+${sum}` : sum} {sum === 0 ? '(zero-sum)' : '(not zero-sum)'}
         </div>
       </div>
 
-      <div className="mb-3 grid grid-cols-2 gap-2 md:mb-4 md:grid-cols-4 md:gap-4">
+      <div className="mb-2.5 grid grid-cols-2 gap-1.5 md:mb-4 md:grid-cols-4 md:gap-4">
         {players.map((player) => (
           <div key={player.id} className="space-y-1">
-            <label className="text-xs font-bold uppercase text-[#6b7280]">{player.name}</label>
+            <label className="text-[11px] font-bold uppercase text-[#6b7280]">{player.name}</label>
             <NumberInput
               value={values[player.id] || ''}
               onChange={(value) => onValueChange(player.id, parseInt(value, 10) || 0)}
@@ -45,14 +45,14 @@ export const ManualAdjustmentsPanel = ({
         ))}
       </div>
 
-      <div className="mb-3 space-y-1.5 md:mb-4 md:space-y-2">
-        <label className="flex items-center gap-1 text-xs font-bold uppercase text-[#6b7280]">
+      <div className="mb-2.5 space-y-1.5 md:mb-4 md:space-y-2">
+        <label className="flex items-center gap-1 text-[11px] font-bold uppercase text-[#6b7280]">
           <MessageSquare size={12} /> 原因
         </label>
         <select
           value={remarks}
           onChange={(event) => onRemarksChange(event.target.value)}
-          className="w-full rounded-lg border border-[#d1d5db]/80 bg-white px-3 py-2 text-[#374151] outline-none focus:ring-2 focus:ring-[#9ca3af]/40"
+          className="w-full rounded-lg border border-[#d1d5db]/80 bg-white px-3 py-1.5 text-[#374151] outline-none focus:ring-2 focus:ring-[#9ca3af]/40"
         >
           <option value="">選擇原因</option>
           {ADJUSTMENT_REASONS.map((reason) => (
@@ -63,7 +63,7 @@ export const ManualAdjustmentsPanel = ({
 
       <div className="flex justify-end gap-2">
         <Button variant="ghost" onClick={onCancel}>取消</Button>
-        <Button variant="primary" onClick={onApply} disabled={disabled} icon={CheckCircle2}>確定</Button>
+        <Button variant="primary" onClick={onApply} disabled={disabled}>確定</Button>
       </div>
     </Wrapper>
   );

@@ -9,8 +9,8 @@ const variants = {
 
 const sizes = {
   sm: 'px-3 py-1.5 text-xs',
-  md: 'px-4 py-2 text-sm',
-  lg: 'px-5 py-3 text-base',
+  md: 'px-3.5 py-2 text-sm',
+  lg: 'px-4 py-2.5 text-sm',
   icon: 'h-10 w-10 p-0',
 };
 
