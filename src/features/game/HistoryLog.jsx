@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useRef, useState } from 'react';
 import { History, MessageSquare } from 'lucide-react';
 import { Button } from '../../components/common/Button';
 import { EmptyState } from '../../components/common/EmptyState';
@@ -6,7 +6,19 @@ import { formatSignedNumber } from '../../utils/formatting';
 
 export const HistoryLog = ({ history, players }) => {
   const [showFullHistory, setShowFullHistory] = useState(false);
+  const sectionRef = useRef(null);
   const visibleHistory = showFullHistory ? history : history.slice(0, 3);
+  const toggleHistory = () => {
+    setShowFullHistory((expanded) => {
+      const nextExpanded = !expanded;
+      if (expanded) {
+        window.setTimeout(() => {
+          sectionRef.current?.scrollIntoView({ block: 'start', behavior: 'smooth' });
+        }, 0);
+      }
+      return nextExpanded;
+    });
+  };
   const getPlayerName = (id) => players.find((player) => player.id === id)?.name || id;
   const getEntryTitle = (entry) => (
     entry.winner === 'SYSTEM' ? '其他' : `${getPlayerName(entry.winner)} 贏`
@@ -24,14 +36,14 @@ export const HistoryLog = ({ history, players }) => {
   };
 
   return (
-    <section className="space-y-2.5">
+    <section ref={sectionRef} className="space-y-2.5">
       <div className="flex items-center justify-between gap-3">
         <div className="flex items-center gap-2">
           <History className="text-[#6b7280]" />
           <h2 className="text-base font-semibold tracking-[0.08em] text-[#1f2937] md:text-xl">紀錄</h2>
         </div>
         {history.length > 3 ? (
-          <Button size="sm" onClick={() => setShowFullHistory((value) => !value)}>
+          <Button size="sm" onClick={toggleHistory}>
             {showFullHistory ? 'Show less' : `Show all (${history.length})`}
           </Button>
         ) : null}
