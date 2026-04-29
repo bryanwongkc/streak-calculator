@@ -8,13 +8,27 @@ export const HistoryLog = ({ history, players }) => {
   const [showFullHistory, setShowFullHistory] = useState(false);
   const visibleHistory = showFullHistory ? history : history.slice(0, 3);
   const getPlayerName = (id) => players.find((player) => player.id === id)?.name || id;
+  const getEntryTitle = (entry) => (
+    entry.winner === 'SYSTEM' ? '其他' : `${getPlayerName(entry.winner)} won`
+  );
+  const getEntryDetails = (entry) => {
+    if (entry.winner === 'SYSTEM') return entry.details;
+    if (entry.type === 'Slaying king') return `${getPlayerName(entry.winner)} 劈半`;
+    if (entry.details === 'Opening winning hand.') return '贏頭糊';
+    if (entry.details?.includes('repeats the win')) return `${getPlayerName(entry.winner)} 再拉`;
+
+    const settlementMatch = entry.details?.match(/^Full settlement to (.+)\.$/);
+    if (settlementMatch) return `${settlementMatch[1]} 收錢`;
+
+    return entry.details;
+  };
 
   return (
     <section className="space-y-3">
       <div className="flex items-center justify-between gap-3">
         <div className="flex items-center gap-2">
           <History className="text-[#6b7280]" />
-          <h2 className="text-lg font-semibold tracking-[0.08em] text-[#1f2937] md:text-xl">History</h2>
+          <h2 className="text-lg font-semibold tracking-[0.08em] text-[#1f2937] md:text-xl">紀錄</h2>
         </div>
         {history.length > 3 ? (
           <Button size="sm" onClick={() => setShowFullHistory((value) => !value)}>
@@ -39,15 +53,12 @@ export const HistoryLog = ({ history, players }) => {
                 <div className="min-w-0">
                   <div className="mb-1 flex flex-wrap items-center gap-2">
                     <span className="font-semibold text-[#111827] md:text-lg">
-                      {entry.winner === 'SYSTEM' ? 'Adjustment' : `${getPlayerName(entry.winner)} won`}
-                    </span>
-                    <span className="rounded-full border border-[#cbd5e1]/70 bg-[#f3f4f6] px-2 py-0.5 text-[10px] font-bold uppercase tracking-[0.18em] text-[#4b5563]">
-                      {entry.type}
+                      {getEntryTitle(entry)}
                     </span>
                   </div>
                   <p className="text-sm text-[#6b7280]">
                     {entry.winner === 'SYSTEM' ? <MessageSquare size={12} className="mb-0.5 mr-1 inline" /> : null}
-                    {entry.details}
+                    {getEntryDetails(entry)}
                   </p>
                 </div>
               </div>
@@ -60,7 +71,7 @@ export const HistoryLog = ({ history, players }) => {
                       {formatSignedNumber(score.total, 1)}
                     </span>
                     <span className="text-[9px] text-[#6b7280]/80">
-                      {score.debt > 0 ? `debt: -${score.debt.toFixed(1)}` : ''}
+                      {score.debt > 0 ? `被拉: -${score.debt.toFixed(1)}` : ''}
                     </span>
                   </div>
                 ))}

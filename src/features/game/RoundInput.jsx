@@ -1,5 +1,5 @@
 import React from 'react';
-import { RotateCw, Swords, Trophy } from 'lucide-react';
+import { Swords, Trophy } from 'lucide-react';
 import { Button } from '../../components/common/Button';
 import { Card } from '../../components/common/Card';
 import { NumberInput } from '../../components/common/NumberInput';
@@ -98,8 +98,8 @@ export const RoundInput = ({
         </div>
 
         <div className="mt-3 flex justify-end md:mt-8">
-          <Button className="w-full md:w-auto" variant="primary" size="md" disabled={!currentWinner || disabled} onClick={onConfirm} icon={RotateCw}>
-            Confirm update
+          <Button className="w-full md:w-auto" variant="primary" size="md" disabled={!currentWinner || disabled} onClick={onConfirm}>
+            確定
           </Button>
         </div>
       </>

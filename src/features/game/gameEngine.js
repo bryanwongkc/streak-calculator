@@ -51,7 +51,7 @@ export const processRound = ({
 
   if (currentWinner === lastWinner) {
     type = 'Streak';
-    details = `${getPlayerName(players, currentWinner)} repeats the win.`;
+    details = `${getPlayerName(players, currentWinner)} 再拉`;
     nextPlayersState = nextPlayersState.map((player) => {
       if (loserIds.includes(player.id)) {
         return {
@@ -63,7 +63,7 @@ export const processRound = ({
     });
   } else if (isSlayingKing) {
     type = 'Slaying king';
-    details = `${getPlayerName(players, currentWinner)} beats ${getPlayerName(players, lastWinner)} with half settlement.`;
+    details = `${getPlayerName(players, currentWinner)} 劈半`;
 
     let totalSettlement = 0;
     nextPlayersState = nextPlayersState.map((player) => {
@@ -94,8 +94,8 @@ export const processRound = ({
   } else {
     type = lastWinner ? 'Fresh settlement' : 'Streak';
     details = lastWinner
-      ? `Full settlement to ${getPlayerName(players, lastWinner)}.`
-      : 'Opening winning hand.';
+      ? `${getPlayerName(players, lastWinner)} 收錢`
+      : '贏頭糊';
 
     let totalSettlement = 0;
 
