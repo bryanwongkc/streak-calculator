@@ -42,13 +42,13 @@ export const PlayerCards = ({
 
           <div className="mt-2 grid grid-cols-2 gap-2 md:mt-4 md:block md:space-y-3">
             <div className="min-w-0">
-              <p className="mb-1 text-[10px] font-semibold uppercase tracking-[0.18em] text-[#8b7356]">Total</p>
+              <p className="mb-1 text-[10px] font-semibold uppercase tracking-[0.18em] text-[#8b7356]">總數</p>
               <p className={`font-mono text-base leading-none md:text-2xl ${player.total >= 0 ? 'text-[#374151]' : 'text-[#6b7280]'}`}>
                 {player.total.toFixed(0)}
               </p>
             </div>
             <div className="min-w-0 border-l border-[#e5e7eb] pl-2 md:border-l-0 md:border-t md:pl-0 md:pt-2">
-              <p className="mb-1 text-[10px] font-semibold uppercase tracking-[0.18em] text-[#8b7356]">Debt</p>
+              <p className="mb-1 text-[10px] font-semibold uppercase tracking-[0.18em] text-[#8b7356]">拉</p>
               <p className={`font-mono text-sm leading-none md:text-xl ${player.id === dangerId || player.debt > 0 ? 'text-[#374151]' : 'text-[#9ca3af]'}`}>
                 {player.debt > 0 ? `-${player.debt.toFixed(0)}` : '0'}
               </p>

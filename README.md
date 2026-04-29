@@ -1,6 +1,6 @@
 # Mahjong Tracker
 
-A Vite + React Mahjong game tracker for shared scoring, local chip counting, dashboard stats, share-link joining, and bundled rule sheets. The UI keeps a mobile-first grey/white Tailwind style with compact controls for game-night use.
+A Vite + React Mahjong game tracker for shared scoring, dashboard stats, share-link joining, and bundled rule sheets. The UI keeps a mobile-first grey/white Tailwind style with compact controls for game-night use.
 
 ## Local Setup
 
@@ -46,8 +46,6 @@ games/{gameId}
   players[]
   lastWinner
   history[]
-  chipConfig.colors[]
-  chipConfig.initialCounts
 ```
 
 Round history now stores `beforeScores`, `afterScores`, `deltasByPlayer`, `winner`, `loserIds`, and `type` so dashboard stats can derive better per-round values. Older history is handled with fallback snapshot logic.
@@ -63,33 +61,6 @@ https://current-domain/?game={gameId}&token={shareToken}
 On load, the app validates the token against the Firestore game document, opens the game, and stores it in `streak-calculator-games` localStorage so it appears in the switcher.
 
 The Share action also renders a QR code for the same link. The initial join screen accepts pasted links/codes and can scan QR codes with the camera, with QR image upload as a fallback.
-
-## Chip Counts
-
-Chip color setup and one shared starting stack are stored in Firestore per game:
-
-```text
-chipConfig: {
-  colors: [
-    { id, name, value, colorHex }
-  ],
-  initialCounts: {
-    [chipColorId]: count
-  }
-}
-```
-
-Default chip values are Red = 1, Yellow = 5, White = 10, Blue = 20, Black = 50, and Purple = 100. The default shared starting stack is 10 red, 8 yellow, 10 white, 5 blue, 3 black, and 1 purple.
-
-Older documents with `initialCountsByPlayer` are still readable. The app derives the shared starting stack from the first available player's old starting counts, then writes the simplified `initialCounts` shape the next time chip config is saved. Untouched legacy default chip setups are upgraded to the new defaults automatically.
-
-Current chip counts are local-only and stored per browser/device under:
-
-```text
-chip-counts-{gameId}
-```
-
-This keeps one player's current count from overwriting another player's count.
 
 ## Rule Sheets
 

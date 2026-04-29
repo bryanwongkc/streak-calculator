@@ -7,6 +7,7 @@ export const Header = ({
   games,
   activeGameId,
   onSelectGame,
+  onRenameGame,
   onCreateGame,
   onDeleteGame,
   isEditingNames,
@@ -38,6 +39,7 @@ export const Header = ({
             games={games}
             activeGameId={activeGameId}
             onSelectGame={onSelectGame}
+            onRenameGame={onRenameGame}
             onCreateGame={onCreateGame}
             onDeleteGame={onDeleteGame}
           />

@@ -3,7 +3,8 @@ import { CheckCircle2, MessageSquare, Settings2 } from 'lucide-react';
 import { Button } from '../../components/common/Button';
 import { Card } from '../../components/common/Card';
 import { NumberInput } from '../../components/common/NumberInput';
-import { TextInput } from '../../components/common/TextInput';
+
+const ADJUSTMENT_REASONS = ['花', '暗槓', '圍骰', '123', '其他'];
 
 export const ManualAdjustmentsPanel = ({
   players,
@@ -25,7 +26,7 @@ export const ManualAdjustmentsPanel = ({
         <h2 className={`${embedded ? 'hidden' : 'flex'} items-center gap-2 text-lg font-semibold text-[#374151] md:text-xl`}>
           <Settings2 size={20} /> Manual adjustments
         </h2>
-        <div className={`self-start rounded-full border px-3 py-1 text-[11px] font-bold md:self-auto ${sum === 0 ? 'border-[#cbd5e1]/70 bg-[#f3f4f6] text-[#4b5563]' : 'border-[#9ca3af]/55 bg-[#eceff3] text-[#374151]'}`}>
+        <div className={`self-start rounded-full border px-3 py-1 text-[11px] font-bold md:self-auto ${sum === 0 ? 'border-[#86efac]/70 bg-[#dcfce7] text-[#166534]' : 'border-[#fecaca]/80 bg-[#fee2e2] text-[#991b1b]'}`}>
           Balance: {sum > 0 ? `+${sum}` : sum} {sum === 0 ? '(zero-sum)' : '(not zero-sum)'}
         </div>
       </div>
@@ -46,18 +47,23 @@ export const ManualAdjustmentsPanel = ({
 
       <div className="mb-3 space-y-1.5 md:mb-4 md:space-y-2">
         <label className="flex items-center gap-1 text-xs font-bold uppercase text-[#6b7280]">
-          <MessageSquare size={12} /> Reason
+          <MessageSquare size={12} /> 原因
         </label>
-        <TextInput
+        <select
           value={remarks}
           onChange={(event) => onRemarksChange(event.target.value)}
-          placeholder="e.g. bonus, side bet, correction"
-        />
+          className="w-full rounded-lg border border-[#d1d5db]/80 bg-white px-3 py-2 text-[#374151] outline-none focus:ring-2 focus:ring-[#9ca3af]/40"
+        >
+          <option value="">選擇原因</option>
+          {ADJUSTMENT_REASONS.map((reason) => (
+            <option key={reason} value={reason}>{reason}</option>
+          ))}
+        </select>
       </div>
 
       <div className="flex justify-end gap-2">
-        <Button variant="ghost" onClick={onCancel}>Cancel</Button>
-        <Button variant="primary" onClick={onApply} disabled={disabled} icon={CheckCircle2}>Apply</Button>
+        <Button variant="ghost" onClick={onCancel}>取消</Button>
+        <Button variant="primary" onClick={onApply} disabled={disabled} icon={CheckCircle2}>確定</Button>
       </div>
     </Wrapper>
   );

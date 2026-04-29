@@ -1,7 +1,10 @@
 import React from 'react';
 
 export const TabBar = ({ tabs, activeTab, onTabChange }) => (
-  <nav className="fixed inset-x-2 bottom-2 z-30 mx-auto grid max-w-xl grid-cols-4 gap-1 rounded-xl border border-[#d1d5db]/90 bg-white/92 p-1 shadow-[0_18px_48px_rgba(148,163,184,0.26)] backdrop-blur-xl">
+  <nav
+    className="fixed inset-x-2 bottom-2 z-30 mx-auto grid max-w-xl gap-1 rounded-xl border border-[#d1d5db]/90 bg-white/92 p-1 shadow-[0_18px_48px_rgba(148,163,184,0.26)] backdrop-blur-xl"
+    style={{ gridTemplateColumns: `repeat(${tabs.length}, minmax(0, 1fr))` }}
+  >
     {tabs.map((tab) => {
       const Icon = tab.icon;
       const active = activeTab === tab.id;

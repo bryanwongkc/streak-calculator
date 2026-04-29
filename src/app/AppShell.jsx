@@ -4,7 +4,6 @@ import { TabBar } from '../components/common/TabBar';
 import { TABS } from './tabs';
 import { DEFAULT_TAB } from './routes';
 import { GameTab } from '../features/game/GameTab';
-import { ChipCounterTab } from '../features/chipCounter/ChipCounterTab';
 import { DashboardTab } from '../features/dashboard/DashboardTab';
 import { RulesTab } from '../features/rules/RulesTab';
 import { CreateGameModal } from '../features/games/CreateGameModal';
@@ -184,6 +183,21 @@ export const AppShell = () => {
     await updateGame(patch);
   };
 
+  const handleRenameGame = async (name) => {
+    const nextName = name.trim();
+    if (!nextName || !normalizedGame || nextName === normalizedGame.name) return;
+
+    await updateGame({ name: nextName });
+    if (activeGameId !== LOCAL_DEMO_GAME_ID) {
+      const nextGames = saveStoredGame({
+        gameId: activeGameId,
+        name: nextName,
+        shareToken: normalizedGame.shareToken,
+      });
+      setStoredGames(nextGames);
+    }
+  };
+
   const handleUndo = async () => {
     if (!normalizedGame?.history?.length) return;
     const nextState = undoLastEntry({
@@ -220,7 +234,7 @@ export const AppShell = () => {
   };
 
   const gamesForSwitcher = activeGameId === LOCAL_DEMO_GAME_ID
-    ? [{ gameId: LOCAL_DEMO_GAME_ID, name: 'Local demo game' }, ...storedGames]
+    ? [{ gameId: LOCAL_DEMO_GAME_ID, name: normalizedGame?.name || 'Local demo game' }, ...storedGames]
     : storedGames;
 
   if (!normalizedGame && (urlJoinPending || loading)) {
@@ -278,6 +292,7 @@ export const AppShell = () => {
           games={gamesForSwitcher}
           activeGameId={activeGameId}
           onSelectGame={setActiveGameId}
+          onRenameGame={handleRenameGame}
           onCreateGame={() => setCreateModalOpen(true)}
           onDeleteGame={handleDeleteGame}
           isEditingNames={isEditingNames}
@@ -305,7 +320,6 @@ export const AppShell = () => {
                 disabled={busy}
               />
             ) : null}
-            {activeTab === 'chips' ? <ChipCounterTab game={normalizedGame} onUpdateGame={handleUpdateGame} disabled={busy} /> : null}
             {activeTab === 'dashboard' ? <DashboardTab game={normalizedGame} /> : null}
             {activeTab === 'rules' ? <RulesTab /> : null}
           </>

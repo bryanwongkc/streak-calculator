@@ -26,7 +26,7 @@ export const RoundInput = ({
     <div className="mb-3 flex items-center justify-between gap-2 md:mb-6">
       <div className="flex items-center gap-2">
         <Swords className="text-[#6b7280]" size={22} />
-        <h2 className="text-lg font-bold text-[#1f2937] md:text-xl">Winning hand</h2>
+        <h2 className="text-lg font-bold text-[#1f2937] md:text-xl">食糊</h2>
       </div>
       <div className="grid grid-cols-2 rounded-lg border border-[#d1d5db]/80 bg-white/80 p-0.5 text-xs font-bold text-[#6b7280]">
         <button
@@ -34,14 +34,14 @@ export const RoundInput = ({
           className={`rounded-md px-2.5 py-1.5 transition ${actionTab === 'round' ? 'bg-[#111827] text-white shadow-sm' : 'hover:text-[#111827]'}`}
           onClick={() => onActionTabChange('round')}
         >
-          Score
+          胡
         </button>
         <button
           type="button"
           className={`rounded-md px-2.5 py-1.5 transition ${actionTab === 'adjustments' ? 'bg-[#111827] text-white shadow-sm' : 'hover:text-[#111827]'}`}
           onClick={() => onActionTabChange('adjustments')}
         >
-          Adjust
+          其他
         </button>
       </div>
     </div>
@@ -62,7 +62,7 @@ export const RoundInput = ({
       <>
         <div className="grid grid-cols-1 gap-3 md:grid-cols-2 md:gap-8">
           <div className="space-y-1.5 md:space-y-2">
-            <label className="block text-[10px] font-medium uppercase tracking-[0.18em] text-[#6b7280] md:text-sm">Winner</label>
+            <label className="block text-[10px] font-medium uppercase tracking-[0.18em] text-[#6b7280] md:text-sm">贏家</label>
             <div className="grid grid-cols-2 gap-1.5">
               {players.map((player) => (
                 <button
@@ -79,7 +79,7 @@ export const RoundInput = ({
           </div>
 
           <div className="space-y-1.5 md:space-y-2">
-            <label className="block text-[10px] font-medium uppercase tracking-[0.18em] text-[#6b7280] md:text-sm">Loser scores</label>
+            <label className="block text-[10px] font-medium uppercase tracking-[0.18em] text-[#6b7280] md:text-sm">拉</label>
             <div className="grid grid-cols-2 gap-1.5 md:gap-2">
               {players.map((player) => (
                 <div key={player.id} className={`space-y-1 ${currentWinner === player.id ? 'opacity-30' : ''}`}>

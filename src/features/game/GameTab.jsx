@@ -1,5 +1,4 @@
 import React, { useMemo, useState } from 'react';
-import { Info } from 'lucide-react';
 import { INITIAL_PLAYERS } from './gameTypes';
 import { applyManualAdjustment, processRound } from './gameEngine';
 import { PlayerCards } from './PlayerCards';
@@ -93,18 +92,6 @@ export const GameTab = ({
       />
 
       <HistoryLog history={history} players={players} />
-
-      <details className="rounded-xl border border-[#d1d5db]/80 bg-white/80 p-3.5 text-xs text-[#6b7280] backdrop-blur-xl md:p-5">
-        <summary className="flex cursor-pointer select-none items-center gap-2 text-[10px] font-semibold uppercase tracking-[0.18em] text-[#1f2937]">
-          <Info size={14} className="text-[#6b7280]" /> Rules reference
-        </summary>
-        <div className="mt-3.5 grid grid-cols-1 gap-3 md:grid-cols-3 md:gap-6">
-          <p><strong>Streak:</strong> Same winner keeps the banked totals in place and loser debt grows by debt x 1.5 plus the round loss.</p>
-          <p><strong>Slaying king:</strong> A winner with existing debt pays half only when the previous winner loses this round; others settle in full.</p>
-          <p><strong>Adjustment:</strong> Changes banked totals only. Current debt remains available for the next settlement.</p>
-        </div>
-      </details>
-
     </div>
   );
 };

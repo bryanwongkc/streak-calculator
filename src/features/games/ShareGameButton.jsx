@@ -48,7 +48,7 @@ export const ShareGameButton = ({ game }) => {
 
   return (
     <>
-      <Button size="sm" onClick={() => setOpen(true)} disabled={!shareUrl} icon={QrCode}>
+      <Button className="h-10" size="sm" onClick={() => setOpen(true)} disabled={!shareUrl} icon={QrCode}>
         Share
       </Button>
       <Modal open={open} title="Share game" onClose={() => setOpen(false)}>

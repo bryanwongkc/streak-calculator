@@ -2,6 +2,7 @@ import React, { useEffect, useRef, useState } from 'react';
 import { Maximize2, Minimize2, Plus, RotateCcw, Settings2, Trash2, Undo2, UserCircle, XCircle } from 'lucide-react';
 import { Button } from '../common/Button';
 import { ConfirmDialog } from '../common/ConfirmDialog';
+import { TextInput } from '../common/TextInput';
 
 export const SettingsMenu = ({
   isEditingNames,
@@ -13,6 +14,7 @@ export const SettingsMenu = ({
   games,
   activeGameId,
   onSelectGame,
+  onRenameGame,
   onCreateGame,
   onDeleteGame,
 }) => {
@@ -22,6 +24,11 @@ export const SettingsMenu = ({
   const [confirmDeleteGame, setConfirmDeleteGame] = useState(false);
   const [isFullscreen, setIsFullscreen] = useState(false);
   const activeGameName = games.find((game) => game.gameId === activeGameId)?.name || 'this game';
+  const [renameValue, setRenameValue] = useState(activeGameName);
+
+  useEffect(() => {
+    setRenameValue(activeGameName);
+  }, [activeGameName, open]);
 
   useEffect(() => {
     const handleFullscreenChange = () => setIsFullscreen(Boolean(document.fullscreenElement));
@@ -65,6 +72,15 @@ export const SettingsMenu = ({
     await document.documentElement.requestFullscreen();
   };
 
+  const commitRename = async () => {
+    const nextName = renameValue.trim();
+    if (!nextName || nextName === activeGameName) {
+      setRenameValue(activeGameName);
+      return;
+    }
+    await onRenameGame?.(nextName);
+  };
+
   const itemClass = 'w-full justify-start';
 
   return (
@@ -98,10 +114,23 @@ export const SettingsMenu = ({
               <Button size="icon" variant="secondary" onClick={onCreateGame} icon={Plus} aria-label="Create game" />
               <Button size="icon" variant="ghost" disabled={!activeGameId} onClick={() => setConfirmDeleteGame(true)} icon={Trash2} aria-label="Delete game" />
             </div>
+            <TextInput
+              value={renameValue}
+              onChange={(event) => setRenameValue(event.target.value)}
+              onBlur={commitRename}
+              onKeyDown={(event) => {
+                if (event.key === 'Enter') {
+                  event.currentTarget.blur();
+                }
+              }}
+              className="mt-2 text-sm font-semibold"
+              aria-label="Rename game"
+              placeholder="Game name"
+            />
           </div>
 
           <Button className={itemClass} variant={isEditingNames ? 'primary' : 'secondary'} onClick={onToggleEditNames} icon={UserCircle}>
-            {isEditingNames ? 'Done editing' : 'Edit names'}
+            {isEditingNames ? 'Done editing' : 'Edit players'}
           </Button>
           <Button className={itemClass} variant="secondary" onClick={toggleFullscreen} icon={isFullscreen ? Minimize2 : Maximize2}>
             {isFullscreen ? 'Exit full' : 'Fullscreen'}
