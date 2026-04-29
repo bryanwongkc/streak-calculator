@@ -1,8 +1,8 @@
 import React, { useEffect, useState } from 'react';
-import { Minus, Plus, RotateCcw, X } from 'lucide-react';
+import { ChevronLeft, ChevronRight, Minus, Plus, RotateCcw, X } from 'lucide-react';
 import { Button } from '../../components/common/Button';
 
-export const RuleImageZoomModal = ({ image, onClose }) => {
+export const RuleImageZoomModal = ({ image, onClose, onPrevious, onNext, positionLabel }) => {
   const [zoom, setZoom] = useState(1);
 
   useEffect(() => {
@@ -19,12 +19,17 @@ export const RuleImageZoomModal = ({ image, onClose }) => {
       <div className="flex items-center justify-between gap-2 border-b border-white/10 bg-[#111827]/95 px-3 py-2 text-white">
         <div className="min-w-0">
           <p className="truncate text-sm font-semibold">{image.title || 'Rule image'}</p>
-          <p className="text-xs text-white/60">{Math.round(zoom * 100)}%</p>
+          <p className="text-xs text-white/60">
+            {positionLabel ? `${positionLabel} · ` : ''}
+            {Math.round(zoom * 100)}%
+          </p>
         </div>
         <div className="flex items-center gap-1">
+          {onPrevious ? <Button aria-label="Previous rule sheet" size="icon" variant="ghost" className="text-white hover:bg-white/10 hover:text-white" onClick={onPrevious} icon={ChevronLeft} /> : null}
           <Button aria-label="Zoom out" size="icon" variant="ghost" className="text-white hover:bg-white/10 hover:text-white" onClick={zoomOut} icon={Minus} />
           <Button aria-label="Reset zoom" size="icon" variant="ghost" className="text-white hover:bg-white/10 hover:text-white" onClick={() => setZoom(1)} icon={RotateCcw} />
           <Button aria-label="Zoom in" size="icon" variant="ghost" className="text-white hover:bg-white/10 hover:text-white" onClick={zoomIn} icon={Plus} />
+          {onNext ? <Button aria-label="Next rule sheet" size="icon" variant="ghost" className="text-white hover:bg-white/10 hover:text-white" onClick={onNext} icon={ChevronRight} /> : null}
           <Button aria-label="Close" size="icon" variant="ghost" className="text-white hover:bg-white/10 hover:text-white" onClick={onClose} icon={X} />
         </div>
       </div>
