@@ -39,7 +39,15 @@ export const DashboardTab = ({ game }) => {
       </div>
 
       <StatsTable rankings={stats.rankings} />
+      <details className="rounded-xl border border-[#d1d5db]/80 bg-white/80 p-3 md:hidden">
+        <summary className="cursor-pointer text-sm font-semibold text-[#374151]">More stats</summary>
+        <div className="mt-3">
+          <PlayerStatsCards playerStats={stats.playerStats} />
+        </div>
+      </details>
+      <div className="hidden md:block">
       <PlayerStatsCards playerStats={stats.playerStats} />
+      </div>
     </div>
   );
 };

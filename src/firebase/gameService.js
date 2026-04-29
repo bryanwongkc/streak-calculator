@@ -12,10 +12,10 @@ import { createDefaultGameState } from '../features/game/gameTypes';
 
 const gamesCollection = 'games';
 
-export const createGame = async ({ name, userId }) => {
+export const createGame = async ({ name, userId, players }) => {
   const gameRef = doc(db, gamesCollection, crypto.randomUUID());
   const shareToken = createShareToken();
-  const game = createDefaultGameState({ name: name || 'Mahjong game' });
+  const game = createDefaultGameState({ name: name || 'Mahjong game', players });
 
   await setDoc(gameRef, {
     ...game,

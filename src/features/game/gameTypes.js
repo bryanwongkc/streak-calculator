@@ -18,16 +18,9 @@ export const createEmptyCounts = (colors = DEFAULT_CHIP_COLORS) => (
   colors.reduce((counts, color) => ({ ...counts, [color.id]: 0 }), {})
 );
 
-export const createInitialChipCounts = (players = INITIAL_PLAYERS, colors = DEFAULT_CHIP_COLORS) => (
-  players.reduce((counts, player) => ({
-    ...counts,
-    [player.id]: createEmptyCounts(colors),
-  }), {})
-);
-
-export const createDefaultChipConfig = (players = INITIAL_PLAYERS) => ({
+export const createDefaultChipConfig = () => ({
   colors: DEFAULT_CHIP_COLORS,
-  initialCountsByPlayer: createInitialChipCounts(players, DEFAULT_CHIP_COLORS),
+  initialCounts: createEmptyCounts(DEFAULT_CHIP_COLORS),
 });
 
 export const createDefaultGameState = (overrides = {}) => {
@@ -38,7 +31,7 @@ export const createDefaultGameState = (overrides = {}) => {
     players,
     lastWinner: overrides.lastWinner ?? null,
     history: overrides.history || [],
-    chipConfig: overrides.chipConfig || createDefaultChipConfig(players),
+    chipConfig: overrides.chipConfig || createDefaultChipConfig(),
     ruleImages: overrides.ruleImages || [],
   };
 };

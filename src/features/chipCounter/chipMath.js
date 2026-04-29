@@ -9,9 +9,15 @@ export const ensureCountsForColors = (counts = {}, colors = []) => (
   }), {})
 );
 
-export const ensureInitialCounts = (players = [], colors = [], initialCountsByPlayer = {}) => (
-  players.reduce((next, player) => ({
-    ...next,
-    [player.id]: ensureCountsForColors(initialCountsByPlayer[player.id], colors),
-  }), {})
-);
+export const getSharedInitialCounts = (chipConfig = {}, players = [], colors = []) => {
+  if (chipConfig.initialCounts) {
+    return ensureCountsForColors(chipConfig.initialCounts, colors);
+  }
+
+  const firstPlayerCounts = players
+    .map((player) => chipConfig.initialCountsByPlayer?.[player.id])
+    .find(Boolean);
+
+  const firstAvailableCounts = firstPlayerCounts || Object.values(chipConfig.initialCountsByPlayer || {})[0];
+  return ensureCountsForColors(firstAvailableCounts, colors);
+};

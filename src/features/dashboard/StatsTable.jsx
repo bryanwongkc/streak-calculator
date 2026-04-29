@@ -2,9 +2,23 @@ import React from 'react';
 import { formatSignedNumber } from '../../utils/formatting';
 
 export const StatsTable = ({ rankings }) => (
-  <div className="overflow-hidden rounded-xl border border-[#d1d5db]/80 bg-white/90">
-    <div className="overflow-x-auto">
-      <table className="w-full min-w-[720px] text-left text-sm">
+  <div className="rounded-xl border border-[#d1d5db]/80 bg-white/90">
+    <div className="divide-y divide-[#e5e7eb] md:hidden">
+      {rankings.map((stat, index) => (
+        <div key={stat.id} className="grid grid-cols-[32px_minmax(0,1fr)_auto] items-center gap-2 p-3 text-sm">
+          <div className="font-mono text-[#6b7280]">{index + 1}</div>
+          <div className="min-w-0">
+            <p className="truncate font-semibold text-[#111827]">{stat.name}</p>
+            <p className="text-xs text-[#6b7280]">{stat.wins}W / {stat.losses}L / debt {stat.debt || 0}</p>
+          </div>
+          <div className={`font-mono font-bold ${stat.total >= 0 ? 'text-[#111827]' : 'text-[#6b7280]'}`}>
+            {formatSignedNumber(stat.total)}
+          </div>
+        </div>
+      ))}
+    </div>
+    <div className="hidden md:block">
+      <table className="w-full text-left text-sm">
         <thead className="bg-[#f3f4f6] text-[10px] uppercase tracking-[0.16em] text-[#6b7280]">
           <tr>
             <th className="px-3 py-3">Rank</th>

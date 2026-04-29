@@ -9,6 +9,7 @@ export const Header = ({
   activeGameId,
   onSelectGame,
   onCreateGame,
+  onJoinGame,
   isEditingNames,
   onToggleEditNames,
   showAdjustments,
@@ -20,10 +21,10 @@ export const Header = ({
   <header className="space-y-3">
     <div className="flex items-center justify-between gap-3">
       <div className="min-w-0">
-        <h1 className="truncate bg-gradient-to-r from-[#111827] via-[#4b5563] to-[#9ca3af] bg-clip-text text-lg font-semibold uppercase leading-none tracking-[0.16em] text-transparent md:text-3xl">
-          Mahjong Tracker
+        <h1 className="truncate bg-gradient-to-r from-[#111827] via-[#4b5563] to-[#9ca3af] bg-clip-text text-base font-semibold uppercase leading-none tracking-[0.16em] text-transparent md:text-3xl">
+          港式台灣牌
         </h1>
-        <p className="mt-1 truncate text-xs font-semibold uppercase tracking-[0.16em] text-[#6b7280]">
+        <p className="mt-1 truncate text-[11px] font-semibold uppercase tracking-[0.14em] text-[#6b7280] md:text-xs">
           {game?.name || 'No active game'}
         </p>
       </div>
@@ -50,6 +51,7 @@ export const Header = ({
         activeGameId={activeGameId}
         onSelectGame={onSelectGame}
         onCreateGame={onCreateGame}
+        onJoinGame={onJoinGame}
       />
     ) : null}
   </header>

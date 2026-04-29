@@ -22,8 +22,8 @@ export const ChipColorConfig = ({ colors, onChange, disabled }) => {
   };
 
   return (
-    <Card className="p-4">
-      <div className="mb-4 flex items-center justify-between gap-3">
+    <Card className="p-3 md:p-4">
+      <div className="mb-3 flex items-center justify-between gap-3">
         <div>
           <h2 className="font-semibold text-[#111827]">Chip colors</h2>
           <p className="text-sm text-[#6b7280]">Shared setup for this game.</p>
@@ -31,14 +31,14 @@ export const ChipColorConfig = ({ colors, onChange, disabled }) => {
         <Button size="sm" onClick={addColor} disabled={disabled} icon={Plus}>Add</Button>
       </div>
 
-      <div className="space-y-3">
+      <div className="space-y-2">
         {colors.map((color) => (
-          <div key={color.id} className="grid grid-cols-[36px_1fr_92px_40px] items-center gap-2">
+          <div key={color.id} className="grid grid-cols-[32px_minmax(0,1fr)_80px_36px] items-center gap-1.5 md:grid-cols-[36px_minmax(0,1fr)_92px_40px] md:gap-2">
             <input
               type="color"
               value={color.colorHex || '#6b7280'}
               onChange={(event) => updateColor(color.id, { colorHex: event.target.value })}
-              className="h-9 w-9 rounded border border-[#d1d5db]"
+              className="h-8 w-8 rounded border border-[#d1d5db] md:h-9 md:w-9"
               aria-label={`${color.name} display color`}
             />
             <TextInput

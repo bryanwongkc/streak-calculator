@@ -20,14 +20,14 @@ export const RuleImageGallery = ({ images, onDelete, disabled }) => {
 
   return (
     <>
-      <div className="grid grid-cols-1 gap-3 sm:grid-cols-2">
+      <div className="grid grid-cols-2 gap-2 sm:gap-3">
         {images.map((image) => (
           <div key={image.id} className="overflow-hidden rounded-xl border border-[#d1d5db]/80 bg-white/90">
             <button type="button" className="block w-full" onClick={() => setPreview(image)}>
               <img src={image.url} alt={image.title || 'Rule'} className="aspect-[4/3] w-full object-cover" />
             </button>
-            <div className="flex items-center justify-between gap-3 px-3 py-2">
-              <p className="truncate text-sm font-semibold text-[#374151]">{image.title || 'Rule image'}</p>
+            <div className="flex items-center justify-between gap-2 px-2 py-1.5 sm:px-3 sm:py-2">
+              <p className="truncate text-xs font-semibold text-[#374151] sm:text-sm">{image.title || 'Rule image'}</p>
               <Button size="icon" variant="ghost" disabled={disabled} onClick={() => setDeleteImage(image)} icon={Trash2} aria-label="Delete rule image" />
             </div>
           </div>

@@ -33,8 +33,8 @@ export const RuleImageUploader = ({ onUpload, disabled }) => {
   };
 
   return (
-    <Card className="p-4">
-      <div className="mb-4">
+    <Card className="p-3 md:p-4">
+      <div className="mb-3">
         <h2 className="font-semibold text-[#111827]">Upload rule image</h2>
         <p className="text-sm text-[#6b7280]">Shared with everyone in this game.</p>
       </div>
