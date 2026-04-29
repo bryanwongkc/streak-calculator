@@ -11,8 +11,6 @@ export const Header = ({
   onDeleteGame,
   isEditingNames,
   onToggleEditNames,
-  showAdjustments,
-  onToggleAdjustments,
   onUndo,
   onReset,
   onResetKeepNames,
@@ -33,8 +31,6 @@ export const Header = ({
           <SettingsMenu
             isEditingNames={isEditingNames}
             onToggleEditNames={onToggleEditNames}
-            showAdjustments={showAdjustments}
-            onToggleAdjustments={onToggleAdjustments}
             onUndo={onUndo}
             onReset={onReset}
             onResetKeepNames={onResetKeepNames}

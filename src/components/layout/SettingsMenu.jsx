@@ -1,13 +1,11 @@
 import React, { useEffect, useRef, useState } from 'react';
-import { Maximize2, Minimize2, Plus, RotateCcw, Settings2, Trash2, Undo2, UserCircle, Wrench, XCircle } from 'lucide-react';
+import { Maximize2, Minimize2, Plus, RotateCcw, Settings2, Trash2, Undo2, UserCircle, XCircle } from 'lucide-react';
 import { Button } from '../common/Button';
 import { ConfirmDialog } from '../common/ConfirmDialog';
 
 export const SettingsMenu = ({
   isEditingNames,
   onToggleEditNames,
-  showAdjustments,
-  onToggleAdjustments,
   onUndo,
   onReset,
   onResetKeepNames,
@@ -104,9 +102,6 @@ export const SettingsMenu = ({
 
           <Button className={itemClass} variant={isEditingNames ? 'primary' : 'secondary'} onClick={onToggleEditNames} icon={UserCircle}>
             {isEditingNames ? 'Done editing' : 'Edit names'}
-          </Button>
-          <Button className={itemClass} variant={showAdjustments ? 'primary' : 'secondary'} onClick={onToggleAdjustments} icon={Wrench}>
-            Adjustments
           </Button>
           <Button className={itemClass} variant="secondary" onClick={toggleFullscreen} icon={isFullscreen ? Minimize2 : Maximize2}>
             {isFullscreen ? 'Exit full' : 'Fullscreen'}

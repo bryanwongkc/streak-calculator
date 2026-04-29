@@ -5,7 +5,6 @@ import { applyManualAdjustment, processRound } from './gameEngine';
 import { PlayerCards } from './PlayerCards';
 import { RoundInput } from './RoundInput';
 import { HistoryLog } from './HistoryLog';
-import { ManualAdjustmentsPanel } from './ManualAdjustmentsPanel';
 
 const emptyValues = (players) => players.reduce((values, player) => ({ ...values, [player.id]: 0 }), {});
 
@@ -13,14 +12,13 @@ export const GameTab = ({
   game,
   onUpdateGame,
   isEditingNames,
-  showAdjustments,
-  onCloseAdjustments,
   onAfterAction,
   disabled,
 }) => {
   const players = game?.players || INITIAL_PLAYERS;
   const history = game?.history || [];
   const [currentWinner, setCurrentWinner] = useState('');
+  const [actionTab, setActionTab] = useState('round');
   const [roundScores, setRoundScores] = useState(() => emptyValues(players));
   const [adjValues, setAdjValues] = useState(() => emptyValues(players));
   const [adjRemarks, setAdjRemarks] = useState('');
@@ -64,24 +62,11 @@ export const GameTab = ({
     await updateGame(nextState);
     setAdjValues(blankValues);
     setAdjRemarks('');
-    onCloseAdjustments?.();
+    setActionTab('round');
   };
 
   return (
-    <div className="space-y-3 md:space-y-6">
-      {showAdjustments ? (
-        <ManualAdjustmentsPanel
-          players={players}
-          values={adjValues}
-          remarks={adjRemarks}
-          onValueChange={(id, value) => setAdjValues((prev) => ({ ...prev, [id]: value }))}
-          onRemarksChange={setAdjRemarks}
-          onCancel={onCloseAdjustments}
-          onApply={handleAdjustmentApply}
-          disabled={disabled}
-        />
-      ) : null}
-
+    <div className="space-y-2 md:space-y-6">
       <PlayerCards
         players={players}
         lastWinner={game.lastWinner}
@@ -96,6 +81,14 @@ export const GameTab = ({
         onWinnerChange={setCurrentWinner}
         onScoreChange={(id, value) => setRoundScores((prev) => ({ ...prev, [id]: value }))}
         onConfirm={handleRoundConfirm}
+        actionTab={actionTab}
+        onActionTabChange={setActionTab}
+        adjustmentValues={adjValues}
+        adjustmentRemarks={adjRemarks}
+        onAdjustmentValueChange={(id, value) => setAdjValues((prev) => ({ ...prev, [id]: value }))}
+        onAdjustmentRemarksChange={setAdjRemarks}
+        onAdjustmentCancel={() => setActionTab('round')}
+        onAdjustmentApply={handleAdjustmentApply}
         disabled={disabled}
       />
 

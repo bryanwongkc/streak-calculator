@@ -43,6 +43,5 @@ export const createDefaultGameState = (overrides = {}) => {
     lastWinner: overrides.lastWinner ?? null,
     history: overrides.history || [],
     chipConfig: overrides.chipConfig || createDefaultChipConfig(),
-    ruleImages: overrides.ruleImages || [],
   };
 };

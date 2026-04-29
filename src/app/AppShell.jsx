@@ -54,7 +54,6 @@ export const AppShell = () => {
   const [joinQrOpen, setJoinQrOpen] = useState(false);
   const [busy, setBusy] = useState(false);
   const [isEditingNames, setIsEditingNames] = useState(false);
-  const [showAdjustments, setShowAdjustments] = useState(false);
   const { game, loading, error, updateGame } = useGameState(activeGameId);
 
   const normalizedGame = useMemo(() => (
@@ -193,18 +192,15 @@ export const AppShell = () => {
     });
     if (nextState) {
       await updateGame(nextState);
-      setShowAdjustments(false);
     }
   };
 
   const handleReset = async () => {
     await updateGame(resetGame());
-    setShowAdjustments(false);
   };
 
   const handleResetKeepNames = async () => {
     await updateGame(resetGameKeepNames(normalizedGame.players));
-    setShowAdjustments(false);
   };
 
   const handleDeleteGame = async () => {
@@ -221,7 +217,6 @@ export const AppShell = () => {
     removeStoredGame(activeGameId);
     setStoredGames(nextGames);
     setActiveGameId(nextGames[0]?.gameId || '');
-    setShowAdjustments(false);
   };
 
   const gamesForSwitcher = activeGameId === LOCAL_DEMO_GAME_ID
@@ -287,8 +282,6 @@ export const AppShell = () => {
           onDeleteGame={handleDeleteGame}
           isEditingNames={isEditingNames}
           onToggleEditNames={() => setIsEditingNames((value) => !value)}
-          showAdjustments={showAdjustments}
-          onToggleAdjustments={() => setShowAdjustments((value) => !value)}
           onUndo={handleUndo}
           onReset={handleReset}
           onResetKeepNames={handleResetKeepNames}
@@ -309,22 +302,12 @@ export const AppShell = () => {
                 game={normalizedGame}
                 onUpdateGame={handleUpdateGame}
                 isEditingNames={isEditingNames}
-                showAdjustments={showAdjustments}
-                onCloseAdjustments={() => setShowAdjustments(false)}
-                onAfterAction={() => setShowAdjustments(false)}
                 disabled={busy}
               />
             ) : null}
             {activeTab === 'chips' ? <ChipCounterTab game={normalizedGame} onUpdateGame={handleUpdateGame} disabled={busy} /> : null}
             {activeTab === 'dashboard' ? <DashboardTab game={normalizedGame} /> : null}
-            {activeTab === 'rules' ? (
-              <RulesTab
-                game={normalizedGame}
-                user={user}
-                onUpdateGame={handleUpdateGame}
-                firebaseReady={isFirebaseConfigured && activeGameId !== LOCAL_DEMO_GAME_ID}
-              />
-            ) : null}
+            {activeTab === 'rules' ? <RulesTab /> : null}
           </>
         )}
 

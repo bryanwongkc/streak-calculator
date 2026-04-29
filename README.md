@@ -1,6 +1,6 @@
 # Mahjong Tracker
 
-A Vite + React Mahjong game tracker for shared scoring, local chip counting, dashboard stats, share-link joining, and uploaded rule images. The UI keeps a mobile-first grey/white Tailwind style with compact controls for game-night use.
+A Vite + React Mahjong game tracker for shared scoring, local chip counting, dashboard stats, share-link joining, and bundled rule sheets. The UI keeps a mobile-first grey/white Tailwind style with compact controls for game-night use.
 
 ## Local Setup
 
@@ -12,13 +12,12 @@ npm run build
 
 ## Firebase Setup
 
-Install or create a Firebase project with Firestore, Firebase Storage, and Anonymous Authentication enabled. Copy `.env.example` to `.env.local` and fill in the Vite values from your Firebase web app:
+Install or create a Firebase project with Firestore and Anonymous Authentication enabled. Copy `.env.example` to `.env.local` and fill in the Vite values from your Firebase web app:
 
 ```bash
 VITE_FIREBASE_API_KEY=
 VITE_FIREBASE_AUTH_DOMAIN=
 VITE_FIREBASE_PROJECT_ID=
-VITE_FIREBASE_STORAGE_BUCKET=
 VITE_FIREBASE_MESSAGING_SENDER_ID=
 VITE_FIREBASE_APP_ID=
 ```
@@ -31,7 +30,6 @@ Rules are included but are not deployed automatically:
 
 ```bash
 firebase deploy --only firestore:rules
-firebase deploy --only storage
 ```
 
 The included rules are permissive MVP rules for anonymous-authenticated users. Production should use stronger membership checks or a backend join function.
@@ -50,7 +48,6 @@ games/{gameId}
   history[]
   chipConfig.colors[]
   chipConfig.initialCounts
-  ruleImages[]
 ```
 
 Round history now stores `beforeScores`, `afterScores`, `deltasByPlayer`, `winner`, `loserIds`, and `type` so dashboard stats can derive better per-round values. Older history is handled with fallback snapshot logic.
@@ -94,12 +91,12 @@ chip-counts-{gameId}
 
 This keeps one player's current count from overwriting another player's count.
 
-## Rule Images
+## Rule Sheets
 
-Rule images upload to Firebase Storage under:
+Bundled rule sheets live in:
 
 ```text
-games/{gameId}/rules/{timestamp}_{safeFileName}
+public/rules/
 ```
 
-Image metadata is stored in the game document's `ruleImages` array.
+The Rules tab displays those images as a mobile slideshow with a zoomable full-screen viewer.
