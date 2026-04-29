@@ -9,6 +9,28 @@ export const ensureCountsForColors = (counts = {}, colors = []) => (
   }), {})
 );
 
+export const isLegacyDefaultChipConfig = (chipConfig = {}) => {
+  const colors = chipConfig.colors || [];
+  const legacy = [
+    ['red', 10],
+    ['blue', 50],
+    ['green', 100],
+    ['black', 500],
+  ];
+
+  const hasLegacyColors = colors.length === legacy.length && legacy.every(([id, value], index) => (
+    colors[index]?.id === id && Number(colors[index]?.value) === value
+  ));
+
+  const initialValues = [
+    ...Object.values(chipConfig.initialCounts || {}),
+    ...Object.values(chipConfig.initialCountsByPlayer || {}).flatMap((counts) => Object.values(counts || {})),
+  ];
+  const hasCustomStartingCounts = initialValues.some((value) => Number(value) > 0);
+
+  return hasLegacyColors && !hasCustomStartingCounts;
+};
+
 export const getSharedInitialCounts = (chipConfig = {}, players = [], colors = []) => {
   if (chipConfig.initialCounts) {
     return ensureCountsForColors(chipConfig.initialCounts, colors);

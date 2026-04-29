@@ -9,7 +9,6 @@ export const Header = ({
   activeGameId,
   onSelectGame,
   onCreateGame,
-  onJoinGame,
   isEditingNames,
   onToggleEditNames,
   showAdjustments,
@@ -51,7 +50,6 @@ export const Header = ({
         activeGameId={activeGameId}
         onSelectGame={onSelectGame}
         onCreateGame={onCreateGame}
-        onJoinGame={onJoinGame}
       />
     ) : null}
   </header>

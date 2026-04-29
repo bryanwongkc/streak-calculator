@@ -65,7 +65,7 @@ https://current-domain/?game={gameId}&token={shareToken}
 
 On load, the app validates the token against the Firestore game document, opens the game, and stores it in `streak-calculator-games` localStorage so it appears in the switcher.
 
-The Share action also renders a QR code for the same link. Join screens accept pasted links/codes and can scan QR codes using the browser's native QR detection when available, with QR image upload as a fallback.
+The Share action also renders a QR code for the same link. The initial join screen accepts pasted links/codes and can scan QR codes with the camera, with QR image upload as a fallback.
 
 ## Chip Counts
 
@@ -82,7 +82,9 @@ chipConfig: {
 }
 ```
 
-Older documents with `initialCountsByPlayer` are still readable. The app derives the shared starting stack from the first available player's old starting counts, then writes the simplified `initialCounts` shape the next time chip config is saved.
+Default chip values are Red = 1, Yellow = 5, White = 10, Blue = 20, Black = 50, and Purple = 100. The default shared starting stack is 10 red, 8 yellow, 10 white, 5 blue, 3 black, and 1 purple.
+
+Older documents with `initialCountsByPlayer` are still readable. The app derives the shared starting stack from the first available player's old starting counts, then writes the simplified `initialCounts` shape the next time chip config is saved. Untouched legacy default chip setups are upgraded to the new defaults automatically.
 
 Current chip counts are local-only and stored per browser/device under:
 

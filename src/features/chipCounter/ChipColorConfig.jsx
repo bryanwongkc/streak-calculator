@@ -7,6 +7,17 @@ import { TextInput } from '../../components/common/TextInput';
 import { ConfirmDialog } from '../../components/common/ConfirmDialog';
 import { createId } from '../../utils/ids';
 
+const CHIP_SWATCHES = [
+  '#dc2626',
+  '#facc15',
+  '#f8fafc',
+  '#2563eb',
+  '#111827',
+  '#7c3aed',
+  '#16a34a',
+  '#f97316',
+];
+
 export const ChipColorConfig = ({ colors, onChange, disabled }) => {
   const [deleteId, setDeleteId] = useState(null);
 
@@ -19,6 +30,12 @@ export const ChipColorConfig = ({ colors, onChange, disabled }) => {
       ...colors,
       { id: createId('chip'), name: 'New chip', value: 0, colorHex: '#6b7280' },
     ]);
+  };
+
+  const cycleDisplayColor = (color) => {
+    const currentIndex = CHIP_SWATCHES.findIndex((swatch) => swatch.toLowerCase() === color.colorHex?.toLowerCase());
+    const nextColor = CHIP_SWATCHES[(currentIndex + 1) % CHIP_SWATCHES.length];
+    updateColor(color.id, { colorHex: nextColor });
   };
 
   return (
@@ -34,13 +51,19 @@ export const ChipColorConfig = ({ colors, onChange, disabled }) => {
       <div className="space-y-2">
         {colors.map((color) => (
           <div key={color.id} className="grid grid-cols-[32px_minmax(0,1fr)_80px_36px] items-center gap-1.5 md:grid-cols-[36px_minmax(0,1fr)_92px_40px] md:gap-2">
-            <input
-              type="color"
-              value={color.colorHex || '#6b7280'}
-              onChange={(event) => updateColor(color.id, { colorHex: event.target.value })}
-              className="h-8 w-8 rounded border border-[#d1d5db] md:h-9 md:w-9"
+            <button
+              type="button"
+              onClick={() => cycleDisplayColor(color)}
+              disabled={disabled}
+              className="flex h-8 w-8 items-center justify-center rounded-lg border border-[#d1d5db] bg-white disabled:opacity-50 md:h-9 md:w-9"
               aria-label={`${color.name} display color`}
-            />
+              title="Tap to change color"
+            >
+              <span
+                className="h-5 w-5 rounded-full border border-[#cbd5e1]"
+                style={{ backgroundColor: color.colorHex || '#6b7280' }}
+              />
+            </button>
             <TextInput
               value={color.name}
               onChange={(event) => updateColor(color.id, { name: event.target.value })}

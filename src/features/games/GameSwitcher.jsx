@@ -1,8 +1,8 @@
 import React from 'react';
-import { Plus, QrCode } from 'lucide-react';
+import { Plus } from 'lucide-react';
 import { Button } from '../../components/common/Button';
 
-export const GameSwitcher = ({ games, activeGameId, onSelectGame, onCreateGame, onJoinGame }) => (
+export const GameSwitcher = ({ games, activeGameId, onSelectGame, onCreateGame }) => (
   <div className="flex items-center gap-2">
     <select
       value={activeGameId || ''}
@@ -15,7 +15,6 @@ export const GameSwitcher = ({ games, activeGameId, onSelectGame, onCreateGame, 
         <option key={game.gameId} value={game.gameId}>{game.name}</option>
       ))}
     </select>
-    <Button size="icon" variant="secondary" onClick={onJoinGame} icon={QrCode} aria-label="Join game with QR code" />
     <Button size="icon" variant="secondary" onClick={onCreateGame} icon={Plus} aria-label="Create game" />
   </div>
 );

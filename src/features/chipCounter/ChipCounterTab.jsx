@@ -1,18 +1,28 @@
-import React, { useState } from 'react';
+import React, { useEffect, useRef, useState } from 'react';
 import { ChipColorConfig } from './ChipColorConfig';
 import { InitialStackEditor } from './InitialStackEditor';
 import { CurrentStackEditor } from './CurrentStackEditor';
-import { getSharedInitialCounts } from './chipMath';
+import { getSharedInitialCounts, isLegacyDefaultChipConfig } from './chipMath';
 import { createDefaultChipConfig } from '../game/gameTypes';
 import { useLocalChipCounts } from '../../hooks/useLocalChipCounts';
 
 export const ChipCounterTab = ({ game, onUpdateGame, disabled }) => {
   const players = game.players || [];
-  const chipConfig = game.chipConfig || createDefaultChipConfig();
+  const rawChipConfig = game.chipConfig || createDefaultChipConfig();
+  const shouldUpgradeLegacyDefaults = isLegacyDefaultChipConfig(rawChipConfig);
+  const chipConfig = shouldUpgradeLegacyDefaults ? createDefaultChipConfig() : rawChipConfig;
   const colors = chipConfig.colors || [];
   const initialCounts = getSharedInitialCounts(chipConfig, players, colors);
   const [activeSection, setActiveSection] = useState('setup');
   const [currentCounts, setCurrentCounts] = useLocalChipCounts(game.id, colors);
+  const upgradedLegacyDefaultsRef = useRef(false);
+
+  useEffect(() => {
+    if (shouldUpgradeLegacyDefaults && !upgradedLegacyDefaultsRef.current) {
+      upgradedLegacyDefaultsRef.current = true;
+      onUpdateGame({ chipConfig: createDefaultChipConfig() });
+    }
+  }, [onUpdateGame, shouldUpgradeLegacyDefaults]);
 
   const updateChipConfig = (patch) => {
     const { initialCountsByPlayer, ...baseChipConfig } = chipConfig;

@@ -267,7 +267,6 @@ export const AppShell = () => {
           activeGameId={activeGameId}
           onSelectGame={setActiveGameId}
           onCreateGame={() => setCreateModalOpen(true)}
-          onJoinGame={() => setJoinQrOpen(true)}
           isEditingNames={isEditingNames}
           onToggleEditNames={() => setIsEditingNames((value) => !value)}
           showAdjustments={showAdjustments}
@@ -319,13 +318,6 @@ export const AppShell = () => {
         onClose={() => setCreateModalOpen(false)}
         onCreate={handleCreateGame}
         busy={busy || !user}
-      />
-      <JoinByQrModal
-        open={joinQrOpen}
-        onClose={() => setJoinQrOpen(false)}
-        onJoin={handleJoinGameInput}
-        busy={busy || !user}
-        error={joinError}
       />
     </main>
   );
