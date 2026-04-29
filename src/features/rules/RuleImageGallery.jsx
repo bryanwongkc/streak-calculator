@@ -3,7 +3,7 @@ import { Trash2 } from 'lucide-react';
 import { Button } from '../../components/common/Button';
 import { ConfirmDialog } from '../../components/common/ConfirmDialog';
 import { EmptyState } from '../../components/common/EmptyState';
-import { Modal } from '../../components/common/Modal';
+import { RuleImageZoomModal } from './RuleImageZoomModal';
 
 export const RuleImageGallery = ({ images, onDelete, disabled }) => {
   const [preview, setPreview] = useState(null);
@@ -34,9 +34,7 @@ export const RuleImageGallery = ({ images, onDelete, disabled }) => {
         ))}
       </div>
 
-      <Modal open={Boolean(preview)} title={preview?.title || 'Rule image'} onClose={() => setPreview(null)}>
-        {preview ? <img src={preview.url} alt={preview.title || 'Rule'} className="max-h-[70vh] w-full rounded-lg object-contain" /> : null}
-      </Modal>
+      <RuleImageZoomModal image={preview} onClose={() => setPreview(null)} />
 
       <ConfirmDialog
         open={Boolean(deleteImage)}

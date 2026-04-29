@@ -5,6 +5,7 @@ import {
   serverTimestamp,
   setDoc,
   updateDoc,
+  deleteDoc,
 } from 'firebase/firestore';
 import { db } from './firebaseClient';
 import { createShareToken } from '../utils/ids';
@@ -51,6 +52,10 @@ export const updateGame = async (gameId, patch) => {
     ...patch,
     updatedAt: serverTimestamp(),
   });
+};
+
+export const deleteGame = async (gameId) => {
+  await deleteDoc(doc(db, gamesCollection, gameId));
 };
 
 export const validateSharedGame = async (gameId, shareToken) => {

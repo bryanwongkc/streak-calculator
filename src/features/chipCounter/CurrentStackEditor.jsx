@@ -4,6 +4,8 @@ import { NumberInput } from '../../components/common/NumberInput';
 import { calculateStackValue } from './chipMath';
 import { formatSignedNumber } from '../../utils/formatting';
 
+const isLightSwatch = (hex = '') => ['#ffffff', '#f8fafc', '#facc15'].includes(hex.toLowerCase());
+
 export const CurrentStackEditor = ({
   colors,
   initialCounts,
@@ -25,7 +27,10 @@ export const CurrentStackEditor = ({
         {colors.map((color) => (
           <label key={color.id} className="grid grid-cols-[minmax(0,1fr)_96px] items-center gap-2">
             <span className="flex items-center gap-2 text-sm font-semibold text-[#374151]">
-              <span className="h-3 w-3 rounded-full" style={{ backgroundColor: color.colorHex }} />
+              <span
+                className={`h-3 w-3 rounded-full ${isLightSwatch(color.colorHex) ? 'border-2 border-[#94a3b8]' : ''}`}
+                style={{ backgroundColor: color.colorHex }}
+              />
               <span className="truncate">{color.name}</span>
             </span>
             <NumberInput

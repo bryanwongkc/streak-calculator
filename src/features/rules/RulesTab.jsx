@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
 import { uploadRuleImage, deleteRuleImageFile } from '../../firebase/ruleImageService';
+import { BuiltInRuleGallery } from './BuiltInRuleGallery';
 import { RuleImageUploader } from './RuleImageUploader';
 import { RuleImageGallery } from './RuleImageGallery';
 
@@ -46,6 +47,7 @@ export const RulesTab = ({ game, user, onUpdateGame, firebaseReady }) => {
 
   return (
     <div className="space-y-4">
+      <BuiltInRuleGallery />
       <RuleImageUploader onUpload={handleUpload} disabled={busy || !firebaseReady} />
       {error ? <div className="rounded-lg border border-[#d1d5db]/80 bg-white/90 px-3 py-2 text-sm text-[#6b7280]">{error}</div> : null}
       <RuleImageGallery images={images} onDelete={handleDelete} disabled={busy || !firebaseReady} />

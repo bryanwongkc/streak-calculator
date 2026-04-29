@@ -10,10 +10,10 @@ import { RulesTab } from '../features/rules/RulesTab';
 import { CreateGameModal } from '../features/games/CreateGameModal';
 import { JoinGamePanel } from '../features/games/JoinGamePanel';
 import { JoinByQrModal } from '../features/games/JoinByQrModal';
-import { createGame, validateSharedGame } from '../firebase/gameService';
+import { createGame, deleteGame, validateSharedGame } from '../firebase/gameService';
 import { ensureAnonymousUser, isFirebaseConfigured } from '../firebase/firebaseClient';
 import { createLocalDemoGame, LOCAL_DEMO_GAME_ID, useGameState } from '../hooks/useGameState';
-import { getStoredGames, saveStoredGame } from '../utils/storage';
+import { getStoredGames, removeStoredGame, saveStoredGame } from '../utils/storage';
 import { resetGame, resetGameKeepNames, undoLastEntry } from '../features/game/gameEngine';
 
 const parseJoinInput = (value) => {
@@ -207,6 +207,23 @@ export const AppShell = () => {
     setShowAdjustments(false);
   };
 
+  const handleDeleteGame = async () => {
+    if (!activeGameId) return;
+
+    const nextGames = storedGames.filter((storedGame) => storedGame.gameId !== activeGameId);
+
+    if (activeGameId === LOCAL_DEMO_GAME_ID) {
+      window.localStorage.removeItem('streak-calculator-local-demo');
+    } else if (isFirebaseConfigured) {
+      await deleteGame(activeGameId);
+    }
+
+    removeStoredGame(activeGameId);
+    setStoredGames(nextGames);
+    setActiveGameId(nextGames[0]?.gameId || '');
+    setShowAdjustments(false);
+  };
+
   const gamesForSwitcher = activeGameId === LOCAL_DEMO_GAME_ID
     ? [{ gameId: LOCAL_DEMO_GAME_ID, name: 'Local demo game' }, ...storedGames]
     : storedGames;
@@ -267,6 +284,7 @@ export const AppShell = () => {
           activeGameId={activeGameId}
           onSelectGame={setActiveGameId}
           onCreateGame={() => setCreateModalOpen(true)}
+          onDeleteGame={handleDeleteGame}
           isEditingNames={isEditingNames}
           onToggleEditNames={() => setIsEditingNames((value) => !value)}
           showAdjustments={showAdjustments}

@@ -1,6 +1,7 @@
 import React, { useEffect, useRef, useState } from 'react';
-import { Maximize2, Minimize2, RotateCcw, Settings2, Undo2, UserCircle, Wrench, XCircle } from 'lucide-react';
+import { Maximize2, Minimize2, Plus, RotateCcw, Settings2, Trash2, Undo2, UserCircle, Wrench, XCircle } from 'lucide-react';
 import { Button } from '../common/Button';
+import { ConfirmDialog } from '../common/ConfirmDialog';
 
 export const SettingsMenu = ({
   isEditingNames,
@@ -11,11 +12,18 @@ export const SettingsMenu = ({
   onReset,
   onResetKeepNames,
   canUndo,
+  games,
+  activeGameId,
+  onSelectGame,
+  onCreateGame,
+  onDeleteGame,
 }) => {
   const menuRef = useRef(null);
   const [open, setOpen] = useState(false);
   const [confirmReset, setConfirmReset] = useState(false);
+  const [confirmDeleteGame, setConfirmDeleteGame] = useState(false);
   const [isFullscreen, setIsFullscreen] = useState(false);
+  const activeGameName = games.find((game) => game.gameId === activeGameId)?.name || 'this game';
 
   useEffect(() => {
     const handleFullscreenChange = () => setIsFullscreen(Boolean(document.fullscreenElement));
@@ -72,7 +80,28 @@ export const SettingsMenu = ({
       />
 
       {open ? (
-        <div className="settings-popover absolute right-0 top-full z-40 mt-2 w-56 space-y-2 rounded-xl border border-[#d1d5db]/90 bg-white/95 p-2 shadow-[0_24px_60px_rgba(148,163,184,0.24)] backdrop-blur-xl">
+        <div className="settings-popover absolute right-0 top-full z-40 mt-2 w-72 space-y-2 rounded-xl border border-[#d1d5db]/90 bg-white/95 p-2 shadow-[0_24px_60px_rgba(148,163,184,0.24)] backdrop-blur-xl">
+          <div className="rounded-lg border border-[#e5e7eb] bg-[#f8fafc] p-2">
+            <label className="mb-1 block text-[10px] font-bold uppercase tracking-[0.16em] text-[#6b7280]">
+              Game
+            </label>
+            <div className="flex gap-1">
+              <select
+                value={activeGameId || ''}
+                onChange={(event) => onSelectGame(event.target.value)}
+                className="min-w-0 flex-1 rounded-lg border border-[#d1d5db]/80 bg-white px-2 py-2 text-sm font-semibold text-[#374151] outline-none focus:ring-2 focus:ring-[#9ca3af]/40"
+                aria-label="Switch game"
+              >
+                {games.length === 0 ? <option value="">No games</option> : null}
+                {games.map((game) => (
+                  <option key={game.gameId} value={game.gameId}>{game.name}</option>
+                ))}
+              </select>
+              <Button size="icon" variant="secondary" onClick={onCreateGame} icon={Plus} aria-label="Create game" />
+              <Button size="icon" variant="ghost" disabled={!activeGameId} onClick={() => setConfirmDeleteGame(true)} icon={Trash2} aria-label="Delete game" />
+            </div>
+          </div>
+
           <Button className={itemClass} variant={isEditingNames ? 'primary' : 'secondary'} onClick={onToggleEditNames} icon={UserCircle}>
             {isEditingNames ? 'Done editing' : 'Edit names'}
           </Button>
@@ -105,6 +134,19 @@ export const SettingsMenu = ({
           )}
         </div>
       ) : null}
+      <ConfirmDialog
+        open={confirmDeleteGame}
+        title="Delete game"
+        description={`Delete ${activeGameName}? This removes it for everyone if it is a shared Firestore game.`}
+        confirmLabel="Delete"
+        destructive
+        onCancel={() => setConfirmDeleteGame(false)}
+        onConfirm={async () => {
+          await onDeleteGame();
+          setConfirmDeleteGame(false);
+          setOpen(false);
+        }}
+      />
     </div>
   );
 };

@@ -1,6 +1,5 @@
 import React from 'react';
 import { SettingsMenu } from './SettingsMenu';
-import { GameSwitcher } from '../../features/games/GameSwitcher';
 import { ShareGameButton } from '../../features/games/ShareGameButton';
 
 export const Header = ({
@@ -9,6 +8,7 @@ export const Header = ({
   activeGameId,
   onSelectGame,
   onCreateGame,
+  onDeleteGame,
   isEditingNames,
   onToggleEditNames,
   showAdjustments,
@@ -39,18 +39,14 @@ export const Header = ({
             onReset={onReset}
             onResetKeepNames={onResetKeepNames}
             canUndo={Boolean(game.history?.length)}
+            games={games}
+            activeGameId={activeGameId}
+            onSelectGame={onSelectGame}
+            onCreateGame={onCreateGame}
+            onDeleteGame={onDeleteGame}
           />
         </div>
       ) : null}
     </div>
-
-    {game ? (
-      <GameSwitcher
-        games={games}
-        activeGameId={activeGameId}
-        onSelectGame={onSelectGame}
-        onCreateGame={onCreateGame}
-      />
-    ) : null}
   </header>
 );
