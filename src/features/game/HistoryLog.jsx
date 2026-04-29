@@ -9,7 +9,7 @@ export const HistoryLog = ({ history, players }) => {
   const visibleHistory = showFullHistory ? history : history.slice(0, 3);
   const getPlayerName = (id) => players.find((player) => player.id === id)?.name || id;
   const getEntryTitle = (entry) => (
-    entry.winner === 'SYSTEM' ? '其他' : `${getPlayerName(entry.winner)} won`
+    entry.winner === 'SYSTEM' ? '其他' : `${getPlayerName(entry.winner)} 贏`
   );
   const getEntryDetails = (entry) => {
     if (entry.winner === 'SYSTEM') return entry.details;
