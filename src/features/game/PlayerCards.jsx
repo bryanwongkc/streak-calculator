@@ -37,7 +37,7 @@ export const PlayerCards = ({
                 {player.name}
               </h3>
             )}
-            {lastWinner === player.id ? <Flame className="shrink-0 animate-pulse text-[#6b7280]" size={14} /> : null}
+            {lastWinner === player.id ? <Flame className="shrink-0 animate-pulse fill-[#f97316]/25 text-[#ea580c]" size={15} /> : null}
           </div>
 
           <div className="mt-1.5 grid grid-cols-2 gap-1.5 md:mt-4 md:block md:space-y-3">
@@ -49,7 +49,7 @@ export const PlayerCards = ({
             </div>
             <div className="min-w-0 border-l border-[#e5e7eb] pl-1.5 md:border-l-0 md:border-t md:pl-0 md:pt-2">
               <p className="mb-0.5 text-xs font-semibold uppercase tracking-[0.12em] text-[#8b7356]">拉</p>
-              <p className={`font-mono text-base leading-none md:text-xl ${player.id === dangerId || player.debt > 0 ? 'text-[#374151]' : 'text-[#9ca3af]'}`}>
+              <p className={`font-mono text-base leading-none md:text-xl ${player.debt > 0 ? 'text-[#dc2626]' : player.id === dangerId ? 'text-[#374151]' : 'text-[#9ca3af]'}`}>
                 {player.debt > 0 ? `-${player.debt.toFixed(0)}` : '0'}
               </p>
             </div>
