@@ -37,13 +37,13 @@ export const PlayerCards = ({
                 {player.name}
               </h3>
             )}
-            {lastWinner === player.id ? <Flame className="shrink-0 animate-pulse fill-[#f97316]/25 text-[#ea580c]" size={15} /> : null}
+            {lastWinner === player.id ? <Flame className="shrink-0 animate-pulse fill-[#f97316]/25 text-[#ea580c]" size={20} /> : null}
           </div>
 
           <div className="mt-1.5 grid grid-cols-2 gap-1.5 md:mt-4 md:block md:space-y-3">
             <div className="min-w-0">
               <p className="mb-0.5 text-xs font-semibold uppercase tracking-[0.12em] text-[#8b7356]">總數</p>
-              <p className={`font-mono text-lg leading-none md:text-2xl ${player.total >= 0 ? 'text-[#374151]' : 'text-[#6b7280]'}`}>
+              <p className={`font-mono text-[22px] leading-none md:text-2xl ${player.total >= 0 ? 'text-[#374151]' : 'text-[#6b7280]'}`}>
                 {player.total.toFixed(0)}
               </p>
             </div>
