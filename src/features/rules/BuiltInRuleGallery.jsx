@@ -1,6 +1,5 @@
 import React, { useMemo, useRef, useState } from 'react';
-import { ChevronLeft, ChevronRight, Maximize2, Search } from 'lucide-react';
-import { Button } from '../../components/common/Button';
+import { Search } from 'lucide-react';
 import { Card } from '../../components/common/Card';
 import { RuleImageZoomModal } from './RuleImageZoomModal';
 
@@ -85,50 +84,12 @@ export const BuiltInRuleGallery = () => {
               <img
                 src={activeImage.url}
                 alt={activeImage.title}
-                className="max-h-[61vh] w-full object-contain object-top"
+                className="max-h-[76vh] w-full object-contain object-top"
                 onError={() => setMissingImages((current) => ({ ...current, [activeImage.id]: true }))}
               />
             </button>
-            <div className="flex items-center justify-between gap-2 border-t border-[#e5e7eb] px-1.5 py-1.5">
-              <Button aria-label="Previous rule sheet" size="icon" variant="ghost" onClick={goPrevious} icon={ChevronLeft} />
-              <button
-                type="button"
-                className="min-w-0 flex-1 rounded-lg px-2 py-1.5 text-center text-sm font-semibold text-[#374151] hover:bg-[#f3f4f6]"
-                onClick={() => setPreviewOpen(true)}
-              >
-                <span className="mr-2">{activeImage.title}</span>
-                <Maximize2 size={15} className="inline-block text-[#6b7280]" />
-              </button>
-              <Button aria-label="Next rule sheet" size="icon" variant="ghost" onClick={goNext} icon={ChevronRight} />
-            </div>
           </div>
         ) : null}
-
-        <div className="mt-2 flex gap-1.5 overflow-x-auto pb-1">
-          {visibleImages.map((image) => (
-            <button
-              key={image.id}
-              type="button"
-              className={`group w-16 shrink-0 md:w-20 overflow-hidden rounded-lg border bg-white text-left transition ${
-                image.id === activeImage?.id
-                  ? 'border-[#111827] shadow-[0_10px_24px_rgba(17,24,39,0.16)]'
-                  : 'border-[#d1d5db]/80 hover:border-[#9ca3af]'
-              }`}
-              onClick={() => setActiveIndex(visibleImages.findIndex((item) => item.id === image.id))}
-            >
-              <img
-                src={image.url}
-                alt={image.title}
-                className="aspect-[3/4] w-full bg-[#f8fafc] object-cover object-top"
-                onError={() => setMissingImages((current) => ({ ...current, [image.id]: true }))}
-              />
-              <div className="flex items-center justify-center gap-1 px-1 py-1">
-                <span className="text-[11px] font-semibold text-[#374151]">{visibleImages.findIndex((item) => item.id === image.id) + 1}</span>
-                <Search size={12} className="shrink-0 text-[#6b7280] transition group-hover:text-[#111827]" />
-              </div>
-            </button>
-          ))}
-        </div>
       </Card>
 
       <RuleImageZoomModal
