@@ -6,6 +6,7 @@ import { TextInput } from '../../components/common/TextInput';
 export const PlayerCards = ({
   players,
   lastWinner,
+  history = [],
   isEditingNames,
   onNameChange,
 }) => {
@@ -17,6 +18,13 @@ export const PlayerCards = ({
     player.debt > worst.debt ? player : worst
   ), players[0]);
   const dangerId = dangerPlayer?.debt > 0 ? dangerPlayer.id : null;
+  const latestRounds = history.filter((entry) => entry.winner && entry.winner !== 'SYSTEM');
+  const activeStreakCount = latestRounds.reduce((count, entry, index) => {
+    if (!lastWinner || entry.winner !== lastWinner) return count;
+    if (index !== count) return count;
+    return count + 1;
+  }, 0);
+  const visibleStreakCount = Math.max(activeStreakCount, lastWinner ? 1 : 0);
 
   return (
     <div className="grid grid-cols-2 gap-1.5 md:grid-cols-4 md:gap-4">
@@ -37,7 +45,22 @@ export const PlayerCards = ({
                 {player.name}
               </h3>
             )}
-            {lastWinner === player.id ? <Flame className="shrink-0 animate-pulse fill-[#f97316]/25 text-[#ea580c]" size={20} /> : null}
+            {lastWinner === player.id ? (
+              <div
+                className="flex max-w-[4.25rem] shrink-0 flex-wrap justify-end gap-0.5"
+                aria-label={`${visibleStreakCount} win streak`}
+                title={`${visibleStreakCount} win streak`}
+              >
+                {Array.from({ length: visibleStreakCount }).map((_, index) => (
+                  <Flame
+                    key={index}
+                    className="shrink-0 fill-[#fed7aa] text-[#ea580c] drop-shadow-[0_1px_2px_rgba(234,88,12,0.22)]"
+                    size={14}
+                    strokeWidth={2.5}
+                  />
+                ))}
+              </div>
+            ) : null}
           </div>
 
           <div className="mt-1.5 grid grid-cols-2 gap-1.5 md:mt-4 md:block md:space-y-3">

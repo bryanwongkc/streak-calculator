@@ -69,6 +69,7 @@ export const GameTab = ({
       <PlayerCards
         players={players}
         lastWinner={game.lastWinner}
+        history={history}
         isEditingNames={isEditingNames}
         onNameChange={handleNameUpdate}
       />
