@@ -16,6 +16,48 @@ const zeroStats = (player) => ({
 
 const getScoreSnapshot = (entry) => entry.afterScores || entry.scores || [];
 
+const snapshotToTotals = (players, snapshot = []) => (
+  players.reduce((totals, player) => {
+    const score = snapshot.find((item) => item.id === player.id);
+    return {
+      ...totals,
+      [player.id]: Number(score?.total || 0),
+    };
+  }, {})
+);
+
+export const deriveScoreTimeline = (players = [], history = []) => {
+  const orderedHistory = history
+    .slice()
+    .sort((a, b) => (a.round || 0) - (b.round || 0));
+
+  if (!orderedHistory.length) {
+    return [{
+      round: 0,
+      label: 'Start',
+      totalsByPlayer: snapshotToTotals(players, []),
+    }];
+  }
+
+  const firstBeforeScores = orderedHistory[0]?.beforeScores || [];
+  const points = [{
+    round: 0,
+    label: 'Start',
+    totalsByPlayer: snapshotToTotals(players, firstBeforeScores),
+  }];
+
+  orderedHistory.forEach((entry) => {
+    const snapshot = getScoreSnapshot(entry);
+    points.push({
+      round: entry.round || points.length,
+      label: `R${entry.round || points.length}`,
+      totalsByPlayer: snapshotToTotals(players, snapshot),
+    });
+  });
+
+  return points;
+};
+
 const getPlayerDelta = (entry, playerId, previousScores = []) => {
   if (entry.deltasByPlayer?.[playerId]) {
     return Number(entry.deltasByPlayer[playerId].total || 0);
@@ -105,6 +147,7 @@ export const deriveGameStats = (players = [], history = []) => {
   return {
     playerStats,
     rankings: playerStats.slice().sort((a, b) => b.total - a.total),
+    scoreTimeline: deriveScoreTimeline(players, history),
     rounds: history.filter((entry) => entry.winner !== 'SYSTEM').length,
     adjustments: history.filter((entry) => entry.winner === 'SYSTEM').length,
   };

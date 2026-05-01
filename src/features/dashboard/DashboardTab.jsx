@@ -4,6 +4,7 @@ import { Card } from '../../components/common/Card';
 import { EmptyState } from '../../components/common/EmptyState';
 import { useGameStats } from '../../hooks/useGameStats';
 import { PlayerStatsCards } from './PlayerStatsCards';
+import { ScoreLineChart } from './ScoreLineChart';
 import { StatsTable } from './StatsTable';
 
 export const DashboardTab = ({ game }) => {
@@ -39,6 +40,7 @@ export const DashboardTab = ({ game }) => {
       </div>
 
       <StatsTable rankings={stats.rankings} />
+      <ScoreLineChart players={game.players || []} timeline={stats.scoreTimeline} />
       <details className="rounded-xl border border-[#d1d5db]/80 bg-white/80 p-2.5 md:hidden">
         <summary className="cursor-pointer text-sm font-semibold text-[#374151]">More stats</summary>
         <div className="mt-3">
