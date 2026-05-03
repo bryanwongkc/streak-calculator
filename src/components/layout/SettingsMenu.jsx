@@ -21,6 +21,7 @@ export const SettingsMenu = ({
   const menuRef = useRef(null);
   const [open, setOpen] = useState(false);
   const [confirmReset, setConfirmReset] = useState(false);
+  const [confirmUndo, setConfirmUndo] = useState(false);
   const [confirmDeleteGame, setConfirmDeleteGame] = useState(false);
   const [isFullscreen, setIsFullscreen] = useState(false);
   const activeGameName = games.find((game) => game.gameId === activeGameId)?.name || 'this game';
@@ -44,12 +45,14 @@ export const SettingsMenu = ({
       if (!menuRef.current?.contains(event.target)) {
         setOpen(false);
         setConfirmReset(false);
+        setConfirmUndo(false);
       }
     };
     const handleEscape = (event) => {
       if (event.key === 'Escape') {
         setOpen(false);
         setConfirmReset(false);
+        setConfirmUndo(false);
       }
     };
 
@@ -140,7 +143,7 @@ export const SettingsMenu = ({
           <Button className={itemClass} variant="secondary" onClick={toggleFullscreen} icon={isFullscreen ? Minimize2 : Maximize2}>
             {isFullscreen ? 'Exit full' : 'Fullscreen'}
           </Button>
-          <Button className={itemClass} variant="secondary" onClick={onUndo} disabled={!canUndo} icon={Undo2}>
+          <Button className={itemClass} variant="secondary" onClick={() => setConfirmUndo(true)} disabled={!canUndo} icon={Undo2}>
             Undo
           </Button>
 
@@ -163,6 +166,18 @@ export const SettingsMenu = ({
           )}
         </div>
       ) : null}
+      <ConfirmDialog
+        open={confirmUndo}
+        title="Undo last entry"
+        description="Undo the latest game entry and restore the previous scores?"
+        confirmLabel="Undo"
+        onCancel={() => setConfirmUndo(false)}
+        onConfirm={async () => {
+          await onUndo();
+          setConfirmUndo(false);
+          setOpen(false);
+        }}
+      />
       <ConfirmDialog
         open={confirmDeleteGame}
         title="Delete game"
