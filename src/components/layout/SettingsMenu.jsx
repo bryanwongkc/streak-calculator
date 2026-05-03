@@ -114,19 +114,24 @@ export const SettingsMenu = ({
               <Button size="icon" variant="secondary" onClick={onCreateGame} icon={Plus} aria-label="Create game" />
               <Button size="icon" variant="ghost" disabled={!activeGameId} onClick={() => setConfirmDeleteGame(true)} icon={Trash2} aria-label="Delete game" />
             </div>
-            <TextInput
-              value={renameValue}
-              onChange={(event) => setRenameValue(event.target.value)}
-              onBlur={commitRename}
-              onKeyDown={(event) => {
-                if (event.key === 'Enter') {
-                  event.currentTarget.blur();
-                }
-              }}
-              className="mt-2 text-sm font-semibold"
-              aria-label="Rename game"
-              placeholder="Game name"
-            />
+            <label className="mt-2 block space-y-1">
+              <span className="block text-[10px] font-bold uppercase tracking-[0.16em] text-[#6b7280]">
+                Rename game
+              </span>
+              <TextInput
+                value={renameValue}
+                onChange={(event) => setRenameValue(event.target.value)}
+                onBlur={commitRename}
+                onKeyDown={(event) => {
+                  if (event.key === 'Enter') {
+                    event.currentTarget.blur();
+                  }
+                }}
+                className="text-sm font-semibold"
+                aria-label="Rename game"
+                placeholder="Game name"
+              />
+            </label>
           </div>
 
           <Button className={itemClass} variant={isEditingNames ? 'primary' : 'secondary'} onClick={onToggleEditNames} icon={UserCircle}>
