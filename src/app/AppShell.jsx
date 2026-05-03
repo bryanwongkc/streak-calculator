@@ -266,6 +266,10 @@ export const AppShell = () => {
           open={createModalOpen}
           onClose={() => setCreateModalOpen(false)}
           onCreate={handleCreateGame}
+          onOpenQrJoin={() => {
+            setCreateModalOpen(false);
+            setJoinQrOpen(true);
+          }}
           busy={busy || !user}
         />
         <JoinByQrModal
@@ -332,7 +336,18 @@ export const AppShell = () => {
         open={createModalOpen}
         onClose={() => setCreateModalOpen(false)}
         onCreate={handleCreateGame}
+        onOpenQrJoin={() => {
+          setCreateModalOpen(false);
+          setJoinQrOpen(true);
+        }}
         busy={busy || !user}
+      />
+      <JoinByQrModal
+        open={joinQrOpen}
+        onClose={() => setJoinQrOpen(false)}
+        onJoin={handleJoinGameInput}
+        busy={busy || !user}
+        error={joinError}
       />
     </main>
   );

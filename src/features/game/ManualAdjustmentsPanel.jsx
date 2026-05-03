@@ -4,7 +4,7 @@ import { Button } from '../../components/common/Button';
 import { Card } from '../../components/common/Card';
 import { NumberInput } from '../../components/common/NumberInput';
 
-const ADJUSTMENT_REASONS = ['花', '暗槓', '圍骰', '123', '其他'];
+const ADJUSTMENT_REASONS = ['花', '暗槓', '圍骰', '追', '123', '其他'];
 
 export const ManualAdjustmentsPanel = ({
   players,

@@ -1,10 +1,11 @@
 import React, { useState } from 'react';
+import { QrCode } from 'lucide-react';
 import { Button } from '../../components/common/Button';
 import { Modal } from '../../components/common/Modal';
 import { TextInput } from '../../components/common/TextInput';
 import { INITIAL_PLAYERS } from '../game/gameTypes';
 
-export const CreateGameModal = ({ open, onClose, onCreate, busy }) => {
+export const CreateGameModal = ({ open, onClose, onCreate, onOpenQrJoin, busy }) => {
   const [name, setName] = useState('');
   const [playerNames, setPlayerNames] = useState(() => INITIAL_PLAYERS.map((player) => player.name));
 
@@ -31,6 +32,11 @@ export const CreateGameModal = ({ open, onClose, onCreate, busy }) => {
       )}
     >
       <div className="space-y-3">
+        {onOpenQrJoin ? (
+          <Button className="min-h-11 w-full" variant="secondary" onClick={onOpenQrJoin} disabled={busy} icon={QrCode}>
+            Scan QR Code to Join
+          </Button>
+        ) : null}
         <label className="space-y-2">
           <span className="text-sm font-semibold text-[#374151]">Game name</span>
           <TextInput value={name} onChange={(event) => setName(event.target.value)} placeholder="Friday mahjong" required />
