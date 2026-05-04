@@ -115,7 +115,7 @@ export const HistoryLog = ({ history, players }) => {
                     <div key={score.id} className="flex min-w-[60px] flex-col items-center">
                       <span className="mb-0.5 max-w-[70px] truncate text-[10px] font-bold text-[#6b7280]">{getPlayerName(score.id)}</span>
                       <span className="font-mono text-sm font-bold text-[#374151]">
-                        {formatSignedNumber(score.total, 1)}
+                        {formatSignedNumber(score.total)}
                       </span>
                     </div>
                   ))}
