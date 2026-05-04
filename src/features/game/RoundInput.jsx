@@ -1,5 +1,5 @@
 import React from 'react';
-import { Plus, Swords, Trophy, X } from 'lucide-react';
+import { Swords, Trophy, X } from 'lucide-react';
 import { Button } from '../../components/common/Button';
 import { Card } from '../../components/common/Card';
 import { NumberInput } from '../../components/common/NumberInput';
@@ -81,10 +81,7 @@ export const RoundInput = ({
                   key={entry.id}
                   className={`${entryIndex > 0 ? 'border-t border-[#e5e7eb] pt-2.5 md:pt-4' : ''}`}
                 >
-                  <div className="mb-1.5 flex items-center justify-between gap-2">
-                    <label className="block text-[10px] font-medium uppercase tracking-[0.18em] text-[#6b7280] md:text-sm">
-                      Entry {entryIndex + 1}
-                    </label>
+                  <div className="mb-1.5 flex items-center justify-end gap-2">
                     {entryIndex > 0 ? (
                       <button
                         type="button"
@@ -142,7 +139,7 @@ export const RoundInput = ({
 
           <div className="mt-2 flex flex-col gap-2 md:mt-8 md:flex-row md:justify-between">
             <Button className="w-full md:w-auto" size="md" onClick={onAddEntry} disabled={disabled}>
-              <Plus size={16} /> 雙/三響
+              雙/三響
             </Button>
             {hasDuplicateWinPair ? (
               <p className="text-xs font-semibold text-[#991b1b] md:self-center">

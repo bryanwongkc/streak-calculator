@@ -63,9 +63,8 @@ export const ActiveDebtPocketsCard = ({ players }) => {
               className="rounded-lg border border-[#e5e7eb] bg-[#f8fafc]/90 px-2.5 py-1.5"
             >
               <span className="font-semibold">{getPlayerName(players, pocket.ownerId)}</span>
-              {' (+) 拉 '}
+              {' 拉 '}
               <span className="font-semibold">{getPlayerName(players, pocket.debtorId)}</span>
-              {' (-)'}
               {': '}
               <span className="font-mono font-bold">{pocket.amount.toFixed(0)}</span>
             </div>

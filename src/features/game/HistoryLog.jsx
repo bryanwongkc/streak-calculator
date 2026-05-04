@@ -100,7 +100,7 @@ export const HistoryLog = ({ history, players }) => {
                             <p className="font-semibold text-[#6b7280]">拉 總數</p>
                             {debtPockets.map((pocket) => (
                               <p key={`${entry.id}-${pocket.debtorId}-${pocket.ownerId}`}>
-                                {getPlayerName(pocket.ownerId)} (+) 拉 {getPlayerName(pocket.debtorId)} (-): <span className="font-mono font-bold">{Number(pocket.amount || 0).toFixed(0)}</span>
+                                {getPlayerName(pocket.ownerId)} 拉 {getPlayerName(pocket.debtorId)}: <span className="font-mono font-bold">{Number(pocket.amount || 0).toFixed(0)}</span>
                               </p>
                             ))}
                           </div>
