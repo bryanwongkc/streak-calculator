@@ -83,9 +83,9 @@ export const HistoryLog = ({ history, players }) => {
                     ) : null}
 
                     {winEvents.length || (entry.winner !== 'SYSTEM' && debtPockets.length) ? (
-                      <div className="mt-2 grid grid-cols-1 gap-3 text-xs text-[#374151] min-[460px]:grid-cols-2 md:text-sm">
+                      <div className="mt-2 grid grid-cols-2 gap-2 text-xs text-[#374151] md:gap-3 md:text-sm">
                         {winEvents.length ? (
-                          <div className="space-y-1">
+                          <div className="min-w-0 space-y-1">
                             <p className="font-semibold text-[#6b7280]">即局</p>
                             {winEvents.map((event, eventIndex) => (
                               <p key={`${event.winnerId}-${event.loserId}-${eventIndex}`}>
@@ -96,7 +96,7 @@ export const HistoryLog = ({ history, players }) => {
                         ) : null}
 
                         {entry.winner !== 'SYSTEM' && debtPockets.length ? (
-                          <div className="space-y-1">
+                          <div className="min-w-0 space-y-1">
                             <p className="font-semibold text-[#6b7280]">拉 總數</p>
                             {debtPockets.map((pocket) => (
                               <p key={`${entry.id}-${pocket.debtorId}-${pocket.ownerId}`}>
