@@ -1,11 +1,40 @@
 import React, { useMemo, useState } from 'react';
 import { INITIAL_PLAYERS } from './gameTypes';
-import { applyManualAdjustment, processRound } from './gameEngine';
-import { PlayerCards } from './PlayerCards';
+import { applyManualAdjustment, normalizePlayerDebts, processRound } from './gameEngine';
+import { ActiveDebtPocketsCard, PlayerCards } from './PlayerCards';
 import { RoundInput } from './RoundInput';
 import { HistoryLog } from './HistoryLog';
 
 const emptyValues = (players) => players.reduce((values, player) => ({ ...values, [player.id]: 0 }), {});
+
+const createRoundEntry = (players) => ({
+  id: `entry-${Date.now()}-${Math.random().toString(16).slice(2)}`,
+  winnerId: '',
+  roundScores: emptyValues(players),
+});
+
+const getWinEventsFromEntries = (roundEntries) => (
+  roundEntries.flatMap((entry) => (
+    Object.entries(entry.roundScores || {})
+      .filter(([playerId, amount]) => playerId !== entry.winnerId && Number(amount) > 0)
+      .map(([loserId, amount]) => ({
+        winnerId: entry.winnerId,
+        loserId,
+        amount: Number(amount),
+      }))
+  ))
+);
+
+const hasDuplicateWinPair = (winEvents) => {
+  const seenPairs = new Set();
+
+  return winEvents.some((event) => {
+    const key = `${event.loserId}->${event.winnerId}`;
+    if (seenPairs.has(key)) return true;
+    seenPairs.add(key);
+    return false;
+  });
+};
 
 export const GameTab = ({
   game,
@@ -14,15 +43,16 @@ export const GameTab = ({
   onAfterAction,
   disabled,
 }) => {
-  const players = game?.players || INITIAL_PLAYERS;
+  const players = normalizePlayerDebts(game?.players || INITIAL_PLAYERS);
   const history = game?.history || [];
-  const [currentWinner, setCurrentWinner] = useState('');
   const [actionTab, setActionTab] = useState('round');
-  const [roundScores, setRoundScores] = useState(() => emptyValues(players));
+  const [roundEntries, setRoundEntries] = useState(() => [createRoundEntry(players)]);
   const [adjValues, setAdjValues] = useState(() => emptyValues(players));
   const [adjRemarks, setAdjRemarks] = useState('');
 
   const blankValues = useMemo(() => emptyValues(players), [players]);
+  const currentWinEvents = useMemo(() => getWinEventsFromEntries(roundEntries), [roundEntries]);
+  const hasDuplicateRoundPair = useMemo(() => hasDuplicateWinPair(currentWinEvents), [currentWinEvents]);
 
   const updateGame = async (patch) => {
     await onUpdateGame(patch);
@@ -36,18 +66,47 @@ export const GameTab = ({
   };
 
   const handleRoundConfirm = async () => {
+    if (hasDuplicateRoundPair) return;
+
     const nextState = processRound({
       players,
-      lastWinner: game.lastWinner,
       history,
-      currentWinner,
-      roundScores,
+      winEvents: currentWinEvents,
     });
 
     if (!nextState) return;
     await updateGame(nextState);
-    setCurrentWinner('');
-    setRoundScores(blankValues);
+    setRoundEntries([createRoundEntry(players)]);
+  };
+
+  const handleEntryWinnerChange = (entryId, winnerId) => {
+    setRoundEntries((entries) => entries.map((entry) => (
+      entry.id === entryId
+        ? {
+          ...entry,
+          winnerId,
+          roundScores: { ...entry.roundScores, [winnerId]: 0 },
+        }
+        : entry
+    )));
+  };
+
+  const handleEntryScoreChange = (entryId, playerId, value) => {
+    setRoundEntries((entries) => entries.map((entry) => (
+      entry.id === entryId
+        ? { ...entry, roundScores: { ...entry.roundScores, [playerId]: value } }
+        : entry
+    )));
+  };
+
+  const handleAddRoundEntry = () => {
+    setRoundEntries((entries) => [...entries, createRoundEntry(players)]);
+  };
+
+  const handleRemoveRoundEntry = (entryId) => {
+    setRoundEntries((entries) => (
+      entries.length === 1 ? entries : entries.filter((entry) => entry.id !== entryId)
+    ));
   };
 
   const handleAdjustmentApply = async () => {
@@ -68,18 +127,19 @@ export const GameTab = ({
     <div className="space-y-1.5 md:space-y-6">
       <PlayerCards
         players={players}
-        lastWinner={game.lastWinner}
-        history={history}
         isEditingNames={isEditingNames}
         onNameChange={handleNameUpdate}
       />
+      <ActiveDebtPocketsCard players={players} />
 
       <RoundInput
         players={players}
-        currentWinner={currentWinner}
-        roundScores={roundScores}
-        onWinnerChange={setCurrentWinner}
-        onScoreChange={(id, value) => setRoundScores((prev) => ({ ...prev, [id]: value }))}
+        roundEntries={roundEntries}
+        onEntryWinnerChange={handleEntryWinnerChange}
+        onEntryScoreChange={handleEntryScoreChange}
+        onAddEntry={handleAddRoundEntry}
+        onRemoveEntry={handleRemoveRoundEntry}
+        hasDuplicateWinPair={hasDuplicateRoundPair}
         onConfirm={handleRoundConfirm}
         actionTab={actionTab}
         onActionTabChange={setActionTab}

@@ -1,12 +1,10 @@
 import React from 'react';
-import { Flame } from 'lucide-react';
 import { Card } from '../../components/common/Card';
 import { TextInput } from '../../components/common/TextInput';
+import { getActiveDebtPockets, getPlayerName } from './gameEngine';
 
 export const PlayerCards = ({
   players,
-  lastWinner,
-  history = [],
   isEditingNames,
   onNameChange,
 }) => {
@@ -14,25 +12,11 @@ export const PlayerCards = ({
     player.total > best.total ? player : best
   ), players[0]);
   const leaderId = leader?.total > 0 ? leader.id : null;
-  const dangerPlayer = players.reduce((worst, player) => (
-    player.debt > worst.debt ? player : worst
-  ), players[0]);
-  const dangerId = dangerPlayer?.debt > 0 ? dangerPlayer.id : null;
-  const latestRounds = history.filter((entry) => entry.winner && entry.winner !== 'SYSTEM');
-  const activeStreakCount = latestRounds.reduce((count, entry, index) => {
-    if (!lastWinner || entry.winner !== lastWinner) return count;
-    if (index !== count) return count;
-    return count + 1;
-  }, 0);
-  const visibleStreakCount = Math.max(activeStreakCount, lastWinner ? 1 : 0);
 
   return (
     <div className="grid grid-cols-2 gap-1.5 md:grid-cols-4 md:gap-4">
       {players.map((player) => (
-        <Card
-          key={player.id}
-          className={`p-2 transition-all duration-300 md:p-5 ${lastWinner === player.id ? 'border-[#9ca3af]/55 bg-[linear-gradient(180deg,rgba(248,250,252,0.98),rgba(241,245,249,0.98))]' : ''}`}
-        >
+        <Card key={player.id} className="p-2 transition-all duration-300 md:p-5">
           <div className="flex items-center justify-between gap-1.5">
             {isEditingNames ? (
               <TextInput
@@ -45,37 +29,13 @@ export const PlayerCards = ({
                 {player.name}
               </h3>
             )}
-            {lastWinner === player.id ? (
-              <div
-                className="flex max-w-[4.25rem] shrink-0 flex-wrap justify-end gap-0.5"
-                aria-label={`${visibleStreakCount} win streak`}
-                title={`${visibleStreakCount} win streak`}
-              >
-                {Array.from({ length: visibleStreakCount }).map((_, index) => (
-                  <Flame
-                    key={index}
-                    className="shrink-0 fill-[#fed7aa] text-[#ea580c] drop-shadow-[0_1px_2px_rgba(234,88,12,0.22)]"
-                    size={14}
-                    strokeWidth={2.5}
-                  />
-                ))}
-              </div>
-            ) : null}
           </div>
 
-          <div className="mt-1.5 grid grid-cols-2 gap-1.5 md:mt-4 md:block md:space-y-3">
-            <div className="min-w-0">
-              <p className="mb-0.5 text-xs font-semibold uppercase tracking-[0.12em] text-[#8b7356]">總數</p>
-              <p className={`font-mono text-[22px] leading-none md:text-2xl ${player.total >= 0 ? 'text-[#374151]' : 'text-[#6b7280]'}`}>
-                {player.total.toFixed(0)}
-              </p>
-            </div>
-            <div className="min-w-0 border-l border-[#e5e7eb] pl-1.5 md:border-l-0 md:border-t md:pl-0 md:pt-2">
-              <p className="mb-0.5 text-xs font-semibold uppercase tracking-[0.12em] text-[#8b7356]">拉</p>
-              <p className={`font-mono text-base leading-none md:text-xl ${player.debt > 0 ? 'text-[#dc2626]' : player.id === dangerId ? 'text-[#374151]' : 'text-[#9ca3af]'}`}>
-                {player.debt > 0 ? `-${player.debt.toFixed(0)}` : '0'}
-              </p>
-            </div>
+          <div className="mt-1.5 md:mt-4">
+            <p className="mb-0.5 text-xs font-semibold uppercase tracking-[0.12em] text-[#8b7356]">總數</p>
+            <p className={`font-mono text-[22px] leading-none md:text-2xl ${player.total >= 0 ? 'text-[#374151]' : 'text-[#6b7280]'}`}>
+              {player.total.toFixed(0)}
+            </p>
           </div>
 
           {leaderId === player.id ? (
@@ -84,5 +44,35 @@ export const PlayerCards = ({
         </Card>
       ))}
     </div>
+  );
+};
+
+export const ActiveDebtPocketsCard = ({ players }) => {
+  const activeDebtPockets = getActiveDebtPockets(players);
+
+  return (
+    <Card className="p-2.5 md:p-5">
+      <div className="mb-2 flex items-center justify-between gap-2">
+        <h2 className="text-sm font-semibold tracking-[0.08em] text-[#1f2937] md:text-base">Active debt pockets</h2>
+      </div>
+      {activeDebtPockets.length ? (
+        <div className="grid grid-cols-1 gap-1.5 text-sm text-[#374151] md:grid-cols-2">
+          {activeDebtPockets.map((pocket) => (
+            <div
+              key={`${pocket.debtorId}-${pocket.ownerId}`}
+              className="rounded-lg border border-[#e5e7eb] bg-[#f8fafc]/90 px-2.5 py-1.5"
+            >
+              <span className="font-semibold">{getPlayerName(players, pocket.debtorId)}</span>
+              {' owes '}
+              <span className="font-semibold">{getPlayerName(players, pocket.ownerId)}</span>
+              {': '}
+              <span className="font-mono font-bold">{pocket.amount.toFixed(0)}</span>
+            </div>
+          ))}
+        </div>
+      ) : (
+        <p className="text-sm text-[#6b7280]">No active debt pockets</p>
+      )}
+    </Card>
   );
 };

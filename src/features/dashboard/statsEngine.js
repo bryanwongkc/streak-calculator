@@ -5,7 +5,6 @@ const zeroStats = (player) => ({
   wins: 0,
   losses: 0,
   total: player.total || 0,
-  debt: player.debt || 0,
   winValue: 0,
   lossValue: 0,
   biggestWin: null,
@@ -92,6 +91,18 @@ const getRoundImpact = (entry, playerId, delta) => {
   return delta;
 };
 
+const getWinEvents = (entry) => {
+  if (entry.winEvents?.length) return entry.winEvents;
+  if (!entry.winner || entry.winner === 'SYSTEM') return [];
+
+  const loserIds = entry.loserIds || Object.keys(entry.roundScores || {}).filter((id) => Number(entry.roundScores[id]) > 0);
+  return loserIds.map((loserId) => ({
+    winnerId: entry.winner,
+    loserId,
+    amount: Number(entry.roundScores?.[loserId] || 0),
+  })).filter((event) => event.amount > 0);
+};
+
 export const deriveGameStats = (players = [], history = []) => {
   const statsByPlayer = players.reduce((stats, player) => ({
     ...stats,
@@ -100,28 +111,37 @@ export const deriveGameStats = (players = [], history = []) => {
 
   let previousScores = [];
   history.slice().sort((a, b) => (a.round || 0) - (b.round || 0)).forEach((entry) => {
-    const loserIds = entry.loserIds || Object.keys(entry.roundScores || {}).filter((id) => Number(entry.roundScores[id]) > 0);
+    const winEvents = getWinEvents(entry);
+    const loserIds = [...new Set(winEvents.map((event) => event.loserId))];
 
     players.forEach((player) => {
       const stat = statsByPlayer[player.id];
       const delta = getPlayerDelta(entry, player.id, previousScores);
-      const impact = getRoundImpact(entry, player.id, delta);
-      const participated = entry.winner === player.id || loserIds.includes(player.id) || delta !== 0;
+      const winAmount = winEvents
+        .filter((event) => event.winnerId === player.id)
+        .reduce((total, event) => total + Number(event.amount || 0), 0);
+      const lossAmount = winEvents
+        .filter((event) => event.loserId === player.id)
+        .reduce((total, event) => total + Number(event.amount || 0), 0);
+      const eventImpact = winAmount - lossAmount;
+      const legacyImpact = getRoundImpact(entry, player.id, delta);
+      const impact = winEvents.length ? (delta || eventImpact) : legacyImpact;
+      const participated = winAmount > 0 || lossAmount > 0 || delta !== 0;
 
       if (!participated) return;
 
       stat.roundsPlayed += 1;
 
-      if (entry.winner === player.id) {
+      if (winAmount > 0) {
         stat.wins += 1;
-        stat.winValue += Math.max(impact, 0);
-        stat.scoreFor += Math.max(impact, 0);
+        stat.winValue += winAmount;
+        stat.scoreFor += winAmount;
       }
 
       if (loserIds.includes(player.id)) {
         stat.losses += 1;
-        stat.lossValue += Math.min(impact, 0);
-        stat.scoreAgainst += Math.abs(Math.min(impact, 0));
+        stat.lossValue -= lossAmount;
+        stat.scoreAgainst += lossAmount;
       }
 
       if (!stat.biggestWin || impact > stat.biggestWin.value) {

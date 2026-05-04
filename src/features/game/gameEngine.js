@@ -1,138 +1,224 @@
-import { createId } from '../../utils/ids';
-import { INITIAL_PLAYERS } from './gameTypes';
+import { createId } from '../../utils/ids.js';
+import { createEmptyDebts, INITIAL_PLAYERS } from './gameTypes.js';
 
-const clonePlayers = (players) => JSON.parse(JSON.stringify(players));
+export const clonePlayers = (players) => JSON.parse(JSON.stringify(players));
 
-const getPlayerName = (players, id) => (
+export const getPlayerName = (players, id) => (
   players.find((player) => player.id === id)?.name || id
+);
+
+export const normalizePlayerDebts = (players = INITIAL_PLAYERS) => {
+  const sourcePlayers = players?.length ? players : INITIAL_PLAYERS;
+  const playerIds = sourcePlayers.map((player) => player.id);
+
+  return sourcePlayers.map((player) => {
+    const debts = playerIds.reduce((normalizedDebts, opponentId) => {
+      if (opponentId === player.id) return normalizedDebts;
+
+      return {
+        ...normalizedDebts,
+        [opponentId]: Math.max(0, Number(player.debts?.[opponentId] || 0)),
+      };
+    }, {});
+    const { debt, debts: _debts, ...rest } = player;
+
+    return {
+      ...rest,
+      total: Number(player.total || 0),
+      debts,
+    };
+  });
+};
+
+export const getActiveDebtPockets = (players = []) => (
+  normalizePlayerDebts(players).flatMap((player) => (
+    Object.entries(player.debts || {})
+      .filter(([, amount]) => Number(amount) !== 0)
+      .map(([ownerId, amount]) => ({
+        debtorId: player.id,
+        ownerId,
+        amount: Number(amount),
+      }))
+  ))
+);
+
+const getDebtTotal = (player) => (
+  Object.values(player.debts || {}).reduce((total, amount) => total + Number(amount || 0), 0)
 );
 
 const getDeltasByPlayer = (beforeScores, afterScores) => (
   afterScores.reduce((deltas, player) => {
     const before = beforeScores.find((item) => item.id === player.id) || {};
+
     return {
       ...deltas,
       [player.id]: {
         total: (player.total || 0) - (before.total || 0),
-        debt: (player.debt || 0) - (before.debt || 0),
+        debt: getDebtTotal(player) - getDebtTotal(before),
+        debts: player.debts || {},
       },
     };
   }, {})
 );
 
-export const getLastWinnerFromHistory = (entries = []) => (
-  entries.find((entry) => entry.winner !== 'SYSTEM')?.winner || null
-);
+const getPlayer = (players, id) => players.find((player) => player.id === id);
+
+const setDebtPocket = (players, debtorId, ownerId, amount) => {
+  if (!debtorId || !ownerId || debtorId === ownerId) return;
+  const debtor = getPlayer(players, debtorId);
+  if (!debtor) return;
+  debtor.debts = {
+    ...createEmptyDebts(debtorId, players.map((player) => player.id)),
+    ...(debtor.debts || {}),
+    [ownerId]: Math.max(0, Number(amount || 0)),
+  };
+  delete debtor.debts[debtorId];
+};
+
+const adjustTotal = (players, playerId, delta) => {
+  const player = getPlayer(players, playerId);
+  if (player) player.total = Number(player.total || 0) + Number(delta || 0);
+};
+
+const pairKey = (loserId, winnerId) => `${loserId}->${winnerId}`;
+
+const normalizeWinEvents = ({ players, winEvents, currentWinner, roundScores }) => {
+  const playerIds = new Set(players.map((player) => player.id));
+  const sourceEvents = Array.isArray(winEvents)
+    ? winEvents
+    : Object.entries(roundScores || {})
+      .map(([loserId, amount]) => ({
+        winnerId: currentWinner,
+        loserId,
+        amount,
+      }));
+  const seenPairs = new Set();
+  const normalizedEvents = [];
+  let hasDuplicatePair = false;
+
+  sourceEvents.forEach((event) => {
+    const winnerId = event.winnerId;
+    const loserId = event.loserId;
+    const amount = Number(event.amount || 0);
+
+    if (
+      !winnerId ||
+      !loserId ||
+      winnerId === loserId ||
+      amount <= 0 ||
+      !playerIds.has(winnerId) ||
+      !playerIds.has(loserId)
+    ) {
+      return;
+    }
+
+    const key = pairKey(loserId, winnerId);
+    if (seenPairs.has(key)) {
+      hasDuplicatePair = true;
+      return;
+    }
+
+    seenPairs.add(key);
+    normalizedEvents.push({
+      winnerId,
+      loserId,
+      amount,
+    });
+  });
+
+  return { events: normalizedEvents, hasDuplicatePair };
+};
+
+export const getLastWinnerFromHistory = () => null;
 
 export const processRound = ({
   players,
-  lastWinner,
-  history,
+  history = [],
+  winEvents,
   currentWinner,
   roundScores,
 }) => {
-  if (!currentWinner) return null;
+  const beforeScores = normalizePlayerDebts(players);
+  const { events: normalizedWinEvents, hasDuplicatePair } = normalizeWinEvents({
+    players: beforeScores,
+    winEvents,
+    currentWinner,
+    roundScores,
+  });
 
-  const beforeScores = clonePlayers(players);
-  let nextPlayersState = clonePlayers(players);
-  let details = '';
-  let type = '';
+  if (hasDuplicatePair || !normalizedWinEvents.length) return null;
 
-  const loserIds = Object.keys(roundScores)
-    .filter((id) => id !== currentWinner && Number(roundScores[id]) > 0);
+  const nextPlayersState = clonePlayers(beforeScores);
+  const winnersSet = new Set(normalizedWinEvents.map((event) => event.winnerId));
+  const eventByPair = normalizedWinEvents.reduce((events, event) => ({
+    ...events,
+    [pairKey(event.loserId, event.winnerId)]: event.amount,
+  }), {});
+  const sameDirectionHandled = new Set();
 
-  const winner = players.find((player) => player.id === currentWinner);
-  const isSlayingKing = Boolean(
-    lastWinner &&
-    currentWinner !== lastWinner &&
-    loserIds.includes(lastWinner) &&
-    winner?.debt > 0
-  );
+  // Rule order matters: settle or preserve existing before-state pockets first,
+  // then record new round events that were not consumed by same-owner wins.
+  getActiveDebtPockets(beforeScores).forEach(({ debtorId, ownerId, amount }) => {
+    const sameDirectionKey = pairKey(debtorId, ownerId);
+    const reverseKey = pairKey(ownerId, debtorId);
 
-  if (currentWinner === lastWinner) {
-    type = 'Streak';
-    details = `${getPlayerName(players, currentWinner)} 再拉`;
-    nextPlayersState = nextPlayersState.map((player) => {
-      if (loserIds.includes(player.id)) {
-        return {
-          ...player,
-          debt: Math.ceil((player.debt * 1.5) + Number(roundScores[player.id] || 0)),
-        };
-      }
-      return player;
-    });
-  } else if (isSlayingKing) {
-    type = 'Slaying king';
-    details = `${getPlayerName(players, currentWinner)} 劈半`;
-
-    let totalSettlement = 0;
-    nextPlayersState = nextPlayersState.map((player) => {
-      if (player.id === currentWinner) {
-        const payment = Math.ceil(player.debt * 0.5);
-        totalSettlement += payment;
-        return { ...player, total: player.total - payment, debt: 0 };
-      }
-
-      if (player.id !== lastWinner) {
-        const payment = player.debt;
-        totalSettlement += payment;
-        return { ...player, total: player.total - player.debt, debt: 0 };
-      }
-
-      return player;
-    });
-
-    nextPlayersState = nextPlayersState.map((player) => (
-      player.id === lastWinner ? { ...player, total: player.total + totalSettlement } : player
-    ));
-
-    nextPlayersState = nextPlayersState.map((player) => (
-      loserIds.includes(player.id)
-        ? { ...player, debt: Number(roundScores[player.id] || 0) }
-        : player
-    ));
-  } else {
-    type = lastWinner ? 'Fresh settlement' : 'Streak';
-    details = lastWinner
-      ? `${getPlayerName(players, lastWinner)} 收錢`
-      : '贏頭糊';
-
-    let totalSettlement = 0;
-
-    if (lastWinner) {
-      nextPlayersState = nextPlayersState.map((player) => {
-        if (player.id !== lastWinner) {
-          totalSettlement += player.debt;
-          return { ...player, total: player.total - player.debt, debt: 0 };
-        }
-        return player;
-      });
-
-      nextPlayersState = nextPlayersState.map((player) => (
-        player.id === lastWinner ? { ...player, total: player.total + totalSettlement } : player
-      ));
+    if (eventByPair[sameDirectionKey]) {
+      setDebtPocket(
+        nextPlayersState,
+        debtorId,
+        ownerId,
+        Math.ceil((amount * 1.5) + eventByPair[sameDirectionKey])
+      );
+      sameDirectionHandled.add(sameDirectionKey);
+      return;
     }
 
-    nextPlayersState = nextPlayersState.map((player) => (
-      loserIds.includes(player.id)
-        ? { ...player, debt: Number(roundScores[player.id] || 0) }
-        : player
-    ));
-  }
+    if (eventByPair[reverseKey]) {
+      const settlement = Math.ceil(amount * 0.5);
+      adjustTotal(nextPlayersState, debtorId, -settlement);
+      adjustTotal(nextPlayersState, ownerId, settlement);
+      setDebtPocket(nextPlayersState, debtorId, ownerId, 0);
+      return;
+    }
 
-  const afterScores = clonePlayers(nextPlayersState);
+    if (!winnersSet.has(ownerId)) {
+      adjustTotal(nextPlayersState, debtorId, -amount);
+      adjustTotal(nextPlayersState, ownerId, amount);
+      setDebtPocket(nextPlayersState, debtorId, ownerId, 0);
+    }
+  });
+
+  normalizedWinEvents.forEach((event) => {
+    const key = pairKey(event.loserId, event.winnerId);
+    if (sameDirectionHandled.has(key)) return;
+
+    setDebtPocket(nextPlayersState, event.winnerId, event.loserId, 0);
+    setDebtPocket(nextPlayersState, event.loserId, event.winnerId, event.amount);
+  });
+
+  const afterScores = normalizePlayerDebts(nextPlayersState);
+  const activeDebtPocketsAfter = getActiveDebtPockets(afterScores);
+  const winnerIds = [...new Set(normalizedWinEvents.map((event) => event.winnerId))];
+  const loserIds = [...new Set(normalizedWinEvents.map((event) => event.loserId))];
+  const recordedRoundScores = normalizedWinEvents.reduce((scores, event) => ({
+    ...scores,
+    [event.loserId]: Number(scores[event.loserId] || 0) + event.amount,
+  }), {});
 
   return {
     players: afterScores,
-    lastWinner: currentWinner,
+    lastWinner: null,
     history: [{
       id: createId('round'),
       round: history.length + 1,
-      winner: currentWinner,
+      type: 'Round',
+      details: 'Game result',
+      winEvents: normalizedWinEvents,
+      activeDebtPocketsAfter,
+      winner: winnerIds[0] || null,
+      winnerIds,
       loserIds,
-      type,
-      details,
-      roundScores: { ...roundScores },
+      roundScores: recordedRoundScores,
       beforeScores,
       afterScores,
       scores: afterScores,
@@ -142,13 +228,13 @@ export const processRound = ({
   };
 };
 
-export const applyManualAdjustment = ({ players, history, values, remarks }) => {
-  const beforeScores = clonePlayers(players);
-  const nextPlayersState = players.map((player) => ({
+export const applyManualAdjustment = ({ players, history = [], values, remarks }) => {
+  const beforeScores = normalizePlayerDebts(players);
+  const nextPlayersState = beforeScores.map((player) => ({
     ...player,
     total: player.total + Number(values[player.id] || 0),
   }));
-  const afterScores = clonePlayers(nextPlayersState);
+  const afterScores = normalizePlayerDebts(nextPlayersState);
 
   return {
     players: afterScores,
@@ -159,6 +245,7 @@ export const applyManualAdjustment = ({ players, history, values, remarks }) => 
       loserIds: [],
       type: 'Adjustment',
       details: remarks || 'Manual adjustment to banked totals.',
+      activeDebtPocketsAfter: getActiveDebtPockets(afterScores),
       beforeScores,
       afterScores,
       scores: afterScores,
@@ -169,15 +256,16 @@ export const applyManualAdjustment = ({ players, history, values, remarks }) => 
 };
 
 export const resetGame = () => ({
-  players: clonePlayers(INITIAL_PLAYERS),
+  players: normalizePlayerDebts(INITIAL_PLAYERS),
   lastWinner: null,
   history: [],
 });
 
 export const resetGameKeepNames = (players) => ({
-  players: players.map((player, index) => ({
-    ...INITIAL_PLAYERS[index],
-    name: player.name,
+  players: normalizePlayerDebts(players).map((player) => ({
+    ...player,
+    total: 0,
+    debts: createEmptyDebts(player.id, players.map((item) => item.id)),
   })),
   lastWinner: null,
   history: [],
@@ -188,12 +276,16 @@ export const undoLastEntry = ({ history, fallbackPlayers }) => {
 
   const [, ...remainingHistory] = history;
   const restoredPlayers = remainingHistory[0]
-    ? clonePlayers(remainingHistory[0].scores || remainingHistory[0].afterScores)
-    : fallbackPlayers.map((player) => ({ ...player, total: 0, debt: 0 }));
+    ? normalizePlayerDebts(remainingHistory[0].scores || remainingHistory[0].afterScores)
+    : normalizePlayerDebts(fallbackPlayers).map((player) => ({
+      ...player,
+      total: 0,
+      debts: createEmptyDebts(player.id, fallbackPlayers.map((item) => item.id)),
+    }));
 
   return {
     players: restoredPlayers,
     history: remainingHistory,
-    lastWinner: getLastWinnerFromHistory(remainingHistory),
+    lastWinner: null,
   };
 };

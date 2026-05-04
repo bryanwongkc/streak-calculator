@@ -9,7 +9,7 @@ export const StatsTable = ({ rankings }) => (
           <div className="font-mono text-[#6b7280]">{index + 1}</div>
           <div className="min-w-0">
             <p className="truncate font-semibold text-[#111827]">{stat.name}</p>
-            <p className="text-[11px] text-[#6b7280]">{stat.wins}W / {stat.losses}L / debt {stat.debt || 0}</p>
+            <p className="text-[11px] text-[#6b7280]">{stat.wins}W / {stat.losses}L</p>
           </div>
           <div className={`font-mono font-bold ${stat.total >= 0 ? 'text-[#111827]' : 'text-[#6b7280]'}`}>
             {formatSignedNumber(stat.total)}
@@ -24,7 +24,6 @@ export const StatsTable = ({ rankings }) => (
             <th className="px-3 py-3">Rank</th>
             <th className="px-3 py-3">Player</th>
             <th className="px-3 py-3">Total</th>
-            <th className="px-3 py-3">Debt</th>
             <th className="px-3 py-3">Wins</th>
             <th className="px-3 py-3">Losses</th>
             <th className="px-3 py-3">Biggest win</th>
@@ -39,7 +38,6 @@ export const StatsTable = ({ rankings }) => (
               <td className={`px-3 py-3 font-mono font-bold ${stat.total >= 0 ? 'text-[#111827]' : 'text-[#6b7280]'}`}>
                 {formatSignedNumber(stat.total)}
               </td>
-              <td className="px-3 py-3 font-mono">{stat.debt ? `-${stat.debt}` : '0'}</td>
               <td className="px-3 py-3 font-mono">{stat.wins}</td>
               <td className="px-3 py-3 font-mono">{stat.losses}</td>
               <td className="px-3 py-3 font-mono">{stat.biggestWin ? `${formatSignedNumber(stat.biggestWin.value)} (R${stat.biggestWin.round})` : '-'}</td>

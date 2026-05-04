@@ -1,6 +1,7 @@
 import { useCallback, useEffect, useState } from 'react';
 import { isFirebaseConfigured } from '../firebase/firebaseClient';
 import { subscribeToGame, updateGame as updateRemoteGame } from '../firebase/gameService';
+import { normalizePlayerDebts } from '../features/game/gameEngine';
 import { createDefaultGameState } from '../features/game/gameTypes';
 import { readLocalJson, writeLocalJson } from '../utils/storage';
 
@@ -14,6 +15,10 @@ export const createLocalDemoGame = () => ({
   createdBy: 'local',
   ...createDefaultGameState({ name: 'Local demo game' }),
 });
+
+const normalizeGameState = (game) => (
+  game ? { ...game, players: normalizePlayerDebts(game.players) } : game
+);
 
 export const useGameState = (gameId) => {
   const [game, setGame] = useState(null);
@@ -31,7 +36,7 @@ export const useGameState = (gameId) => {
 
     if (gameId === LOCAL_DEMO_GAME_ID || !isFirebaseConfigured) {
       const localGame = readLocalJson(LOCAL_DEMO_KEY, createLocalDemoGame());
-      setGame(localGame);
+      setGame(normalizeGameState(localGame));
       setLoading(false);
       return undefined;
     }
@@ -40,7 +45,7 @@ export const useGameState = (gameId) => {
     const unsubscribe = subscribeToGame(
       gameId,
       (nextGame) => {
-        setGame(nextGame);
+        setGame(normalizeGameState(nextGame));
         setLoading(false);
       },
       (snapshotError) => {
@@ -62,13 +67,14 @@ export const useGameState = (gameId) => {
           ...patch,
           updatedAt: new Date().toISOString(),
         };
+        nextGame.players = normalizePlayerDebts(nextGame.players);
         writeLocalJson(LOCAL_DEMO_KEY, nextGame);
         return nextGame;
       });
       return;
     }
 
-    await updateRemoteGame(gameId, patch);
+    await updateRemoteGame(gameId, patch.players ? { ...patch, players: normalizePlayerDebts(patch.players) } : patch);
   }, [gameId]);
 
   return {
