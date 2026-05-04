@@ -53,7 +53,7 @@ export const ActiveDebtPocketsCard = ({ players }) => {
   return (
     <Card className="p-2.5 md:p-5">
       <div className="mb-2 flex items-center justify-between gap-2">
-        <h2 className="text-sm font-semibold tracking-[0.08em] text-[#1f2937] md:text-base">Active debt pockets</h2>
+        <h2 className="text-sm font-semibold tracking-[0.08em] text-[#1f2937] md:text-base">拉</h2>
       </div>
       {activeDebtPockets.length ? (
         <div className="grid grid-cols-1 gap-1.5 text-sm text-[#374151] md:grid-cols-2">
@@ -62,16 +62,17 @@ export const ActiveDebtPocketsCard = ({ players }) => {
               key={`${pocket.debtorId}-${pocket.ownerId}`}
               className="rounded-lg border border-[#e5e7eb] bg-[#f8fafc]/90 px-2.5 py-1.5"
             >
-              <span className="font-semibold">{getPlayerName(players, pocket.debtorId)}</span>
-              {' owes '}
               <span className="font-semibold">{getPlayerName(players, pocket.ownerId)}</span>
+              {' (+) 拉 '}
+              <span className="font-semibold">{getPlayerName(players, pocket.debtorId)}</span>
+              {' (-)'}
               {': '}
               <span className="font-mono font-bold">{pocket.amount.toFixed(0)}</span>
             </div>
           ))}
         </div>
       ) : (
-        <p className="text-sm text-[#6b7280]">No active debt pockets</p>
+        <p className="text-sm text-[#6b7280]">沒有拉</p>
       )}
     </Card>
   );

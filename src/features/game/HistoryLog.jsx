@@ -38,13 +38,6 @@ export const HistoryLog = ({ history, players }) => {
   const getEntryTitle = (entry) => (
     entry.winner === 'SYSTEM' ? '其他' : `Round ${entry.round}`
   );
-  const getEntryDetails = (entry) => {
-    if (entry.winner === 'SYSTEM') return entry.details;
-    const winEvents = getLegacyWinEvents(entry);
-    if (!winEvents.length) return entry.details || 'Game result';
-    return 'Game result';
-  };
-
   return (
     <section ref={sectionRef} className="space-y-2.5">
       <div className="flex items-center justify-between gap-3">
@@ -82,30 +75,36 @@ export const HistoryLog = ({ history, players }) => {
                         {getEntryTitle(entry)}
                       </span>
                     </div>
-                    <p className="text-xs text-[#6b7280] md:text-sm">
-                      {entry.winner === 'SYSTEM' ? <MessageSquare size={12} className="mb-0.5 mr-1 inline" /> : null}
-                      {getEntryDetails(entry)}
-                    </p>
-
-                    {winEvents.length ? (
-                      <div className="mt-2 space-y-1 text-xs text-[#374151] md:text-sm">
-                        <p className="font-semibold text-[#6b7280]">Game result:</p>
-                        {winEvents.map((event, eventIndex) => (
-                          <p key={`${event.winnerId}-${event.loserId}-${eventIndex}`}>
-                            {getPlayerName(event.winnerId)} beat {getPlayerName(event.loserId)}: <span className="font-mono font-bold">{Number(event.amount || 0).toFixed(0)}</span>
-                          </p>
-                        ))}
-                      </div>
+                    {entry.winner === 'SYSTEM' ? (
+                      <p className="text-xs text-[#6b7280] md:text-sm">
+                        <MessageSquare size={12} className="mb-0.5 mr-1 inline" />
+                        {entry.details}
+                      </p>
                     ) : null}
 
-                    {entry.winner !== 'SYSTEM' && debtPockets.length ? (
-                      <div className="mt-2 space-y-1 text-xs text-[#374151] md:text-sm">
-                        <p className="font-semibold text-[#6b7280]">Active debt after round:</p>
-                        {debtPockets.map((pocket) => (
-                          <p key={`${entry.id}-${pocket.debtorId}-${pocket.ownerId}`}>
-                            {getPlayerName(pocket.debtorId)} owes {getPlayerName(pocket.ownerId)}: <span className="font-mono font-bold">{Number(pocket.amount || 0).toFixed(0)}</span>
-                          </p>
-                        ))}
+                    {winEvents.length || (entry.winner !== 'SYSTEM' && debtPockets.length) ? (
+                      <div className="mt-2 grid grid-cols-1 gap-3 text-xs text-[#374151] min-[460px]:grid-cols-2 md:text-sm">
+                        {winEvents.length ? (
+                          <div className="space-y-1">
+                            <p className="font-semibold text-[#6b7280]">即局</p>
+                            {winEvents.map((event, eventIndex) => (
+                              <p key={`${event.winnerId}-${event.loserId}-${eventIndex}`}>
+                                {getPlayerName(event.winnerId)} 食 {getPlayerName(event.loserId)}: <span className="font-mono font-bold">{Number(event.amount || 0).toFixed(0)}</span>
+                              </p>
+                            ))}
+                          </div>
+                        ) : null}
+
+                        {entry.winner !== 'SYSTEM' && debtPockets.length ? (
+                          <div className="space-y-1">
+                            <p className="font-semibold text-[#6b7280]">拉 總數</p>
+                            {debtPockets.map((pocket) => (
+                              <p key={`${entry.id}-${pocket.debtorId}-${pocket.ownerId}`}>
+                                {getPlayerName(pocket.ownerId)} (+) 拉 {getPlayerName(pocket.debtorId)} (-): <span className="font-mono font-bold">{Number(pocket.amount || 0).toFixed(0)}</span>
+                              </p>
+                            ))}
+                          </div>
+                        ) : null}
                       </div>
                     ) : null}
                   </div>

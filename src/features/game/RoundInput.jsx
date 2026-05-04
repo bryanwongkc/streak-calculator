@@ -142,7 +142,7 @@ export const RoundInput = ({
 
           <div className="mt-2 flex flex-col gap-2 md:mt-8 md:flex-row md:justify-between">
             <Button className="w-full md:w-auto" size="md" onClick={onAddEntry} disabled={disabled}>
-              <Plus size={16} /> +
+              <Plus size={16} /> 雙/三響
             </Button>
             {hasDuplicateWinPair ? (
               <p className="text-xs font-semibold text-[#991b1b] md:self-center">
